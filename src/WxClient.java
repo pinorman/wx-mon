@@ -5,7 +5,6 @@ import sensors.Temperature;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -70,19 +69,8 @@ public class WxClient {
             }
 
             socket.close();
-        } catch (UnknownHostException e) {
-            System.out.println(e.toString());
         } catch (IOException e) {
             System.out.println(e.toString());
         }
-    }
-
-    private static int isParseInt(String str) {
-        int num = -1;
-        try {
-            num = Integer.parseInt(str);
-        } catch (NumberFormatException e) {
-        }
-        return num;
     }
 }

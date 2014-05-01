@@ -7,8 +7,6 @@ public class TempSimulate implements TempSensor {
     private int temp = -10;
 
     public TempSimulate() {
-        return;
-
     }
 
     public double readTemp() {

@@ -64,7 +64,7 @@ public class RainSensorQue implements Serializable {
 
     public LocalDateTime getLastTimeSawRain() {
         if (qRain.isEmpty()) return (LocalDateTime.MAX);
-        return ((LocalDateTime) qRain.getFirst());
+        return (qRain.getFirst());
     }
 
     public double getRainLevel() {
@@ -80,11 +80,11 @@ public class RainSensorQue implements Serializable {
      * look  through the que - looking for a gap in rain input (increment) of RAIN_GAP
      * either we find a gap or we reach the beginning of the que.
      */
-    private boolean findGapQue( ChronoUnit interval, int gap) {
+    private boolean findGapQue(ChronoUnit interval, int gap) {
         if (qRain.isEmpty()) return (false);
         accumulatedRain = 0;
         Iterator rainIterator = qRain.iterator();
-        firstTime = lastTime = (LocalDateTime) qRain.getFirst();  // last time for an increment
+        firstTime = lastTime = qRain.getFirst();  // last time for an increment
         do {
             accumulatedRain++;
             lastTime = (LocalDateTime) rainIterator.next();

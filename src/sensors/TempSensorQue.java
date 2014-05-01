@@ -1,7 +1,6 @@
 package sensors;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -12,13 +11,12 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class TempSensorQue implements Serializable {
 
-    private static final int QUE_DEPTH = 10; /* keep this number by default */
     public static final int MIN_TEMP = -40;
+    private Temperature maxTemp = new Temperature(MIN_TEMP);
     public static final int MAX_TEMP = 120;
 
     private Temperature minTemp = new Temperature(MAX_TEMP); /* keep a min/max for this queue */
-    private Temperature maxTemp = new Temperature(MIN_TEMP);
-
+    private static final int QUE_DEPTH = 10; /* keep this number by default */
     private int qDepth;      /* How many readings to keep in the queue*/
     private Deque<Temperature> qTemp;
 
@@ -57,7 +55,7 @@ public class TempSensorQue implements Serializable {
     }
 
     public Temperature[] toArray() {
-        return (qTemp.toArray(new Temperature[0]));
+        return (qTemp.toArray(new Temperature[qTemp.size()]));
     }
 
     public double getCurrentTemp() {
@@ -70,24 +68,9 @@ public class TempSensorQue implements Serializable {
         return (maxTemp.getTemp());
     }
 
-    public LocalDateTime getMaxTempTime() {
-        return (getMaxTempTime());
-    }
 
     public double getMinTemp() {
         return (minTemp.getTemp());
     }
-
-    public LocalDateTime getMinTempTime() {
-        return (getMaxTempTime());
-    }
-
-    public void resetMinTemp() {
-        minTemp.setTemp(MAX_TEMP);
-    }
-
-    public void resetMaxTemp() {
-        maxTemp.setTemp(MIN_TEMP);
-    }
-
 }
+

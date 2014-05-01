@@ -53,14 +53,14 @@ public class TempSensorImpl implements TempSensor {
 
     public double readTemp() {
         double tempF = 0;
-        double tempC = 0;
+        double tempC;
         try {
             BufferedReader br = new BufferedReader(new FileReader(probeFilename));
             String output;
             // Multiple lines from the device
             // "t=" is the line of interest
             while ((output = br.readLine()) != null) {
-                if (output.indexOf("t=") > -1) {
+                if (output.contains("t=")) {
                     // Temp data (multiplied by 1000) in 5 chars after tabc=
                     tempC = (double) Float.parseFloat(
                             output.substring(output.indexOf("t=") + 2));

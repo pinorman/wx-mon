@@ -20,7 +20,7 @@ public class RainSensorQueTest {
     public void testGetRainPerHour() throws Exception {
         RainSensorQue r = new RainSensorQue();
         // check for no rain
-        Assert.assertEquals("No Rain --> Rain per hour incorrect ", (double) 0.0, r.getRainPerHour(ChronoUnit.MINUTES), 0.01);
+        Assert.assertEquals("No Rain --> Rain per hour incorrect ", 0.0, r.getRainPerHour(ChronoUnit.MINUTES), 0.01);
         r.incrementRain();
         Thread.sleep(1000);
         r.incrementRain();
@@ -32,7 +32,7 @@ public class RainSensorQueTest {
         }
         // - we put in more than a minutes worth, but it should still be 60 seconds apart for the cal
         //  so 63  increments (inclusive) over 62 seconds (approx)
-        Assert.assertEquals("Rain per hour incorrect ", (double) ((63.0 * .01) / 62.0) * 3600,
+        Assert.assertEquals("Rain per hour incorrect ",  ((63.0 * .01) / 62.0) * 3600,
                 r.getRainPerHour(ChronoUnit.MINUTES), 0.1);
 
     }
