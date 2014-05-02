@@ -42,6 +42,15 @@ public class WxClient {
         temp = (TempSensor) readData( serverIP, TEMP_PORT);
         wxStation = (RainSensor) readData(serverIP, RAIN_PORT);
 
+        System.out.println("Print out last 50 from history");
+        TempReading tArray[] = temp.toArray();
+        int len = temp.queSize();
+        int begin = 0;
+        if (len >= 50) begin = len - 50;
+        for (int i = begin; i < len; i++) {
+            System.out.println("Index is " + i + " Temp is " + decForm.format(tArray[i].getTemp()) +
+                    " Time was " + dateForm.format(tArray[i].getTempTime()));
+        }
         System.out.println("Rain level is: " + decForm.format(wxStation.getRainLevel()) +
                 " Rate/Hour (by min & Hr): " +
                 decForm.format(wxStation.getRainPerHour(ChronoUnit.MINUTES)) + " " +
@@ -52,15 +61,6 @@ public class WxClient {
         System.out.println("Latest Temp " + decForm.format(temp.getCurrentTemp()) +
                 " Max " + decForm.format(temp.getMaxTemp()) +
                 " Min " + decForm.format(temp.getMinTemp()));
-        System.out.println("Now print out last 50");
-        TempReading tArray[] = temp.toArray();
-        int len = temp.queSize();
-        int begin = 0;
-        if (len >= 50) begin = len - 50;
-        for (int i = begin; i < len; i++) {
-            System.out.println("Index is " + i + " Temp is " + decForm.format(tArray[i].getTemp()) +
-                    " Time was " + dateForm.format(tArray[i].getTempTime()));
-        }
 
     }
 
