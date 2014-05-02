@@ -20,7 +20,7 @@ public class RainSensorImpl implements RainSensor, Serializable {
     * Create the listener for Pin 2 (for now)
     * where we gather rain into
     * */
-    private RainSensorQue rainData = new RainSensorQue();
+    private RainSensorHistory rainData = new RainSensorHistory();
 
     public RainSensorImpl(GpioController gpio) {
 

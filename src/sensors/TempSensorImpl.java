@@ -1,20 +1,18 @@
 package sensors;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileReader;
+import java.io.*;
 
 /**
  * Created by Paul on 4/20/2014.
  */
-public class TempSensorImpl implements TempSensor {
+public class TempSensorImpl implements TempSensor, Serializable {
 
     private static String w1DirPath = "/sys/bus/w1/devices";
-//    private static String w1DirPath = "C:/Temp";
+    private static int QUE_DEPTH = 1000;
 
     private File probeFilename;
     private boolean tProbeFound = true;
+    private TempSensorHistory tempQue;
 
 
     public TempSensorImpl(String sensorId) {
@@ -24,6 +22,8 @@ public class TempSensorImpl implements TempSensor {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             tProbeFound = false;
+        } finally {
+            tempQue = new TempSensorHistory(QUE_DEPTH);
         }
 
     }
@@ -36,6 +36,7 @@ public class TempSensorImpl implements TempSensor {
     *
     */
     public TempSensorImpl() {
+
         String filePath;
         File dir = new File(w1DirPath);
         File[] files = dir.listFiles(new DirectoryFileFilter());
@@ -48,6 +49,8 @@ public class TempSensorImpl implements TempSensor {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             tProbeFound = false;
+        } finally {
+            tempQue = new TempSensorHistory(QUE_DEPTH);
         }
     }
 
@@ -79,7 +82,37 @@ public class TempSensorImpl implements TempSensor {
 // This FileFilter selects subdirs with name beginning with 28-
 // Kernel module gives each 1-wire temp sensor a name starting with 28-
 
-    class DirectoryFileFilter implements FileFilter {
+    @Override
+    public void add(TempReading t) {
+        tempQue.add(t);
+    }
+
+    @Override
+    public double getCurrentTemp() {
+        return (tempQue.getCurrentTemp());
+    }
+
+    @Override
+    public double getMaxTemp() {
+        return (tempQue.getMaxTemp());
+    }
+
+    @Override
+    public double getMinTemp() {
+        return (tempQue.getMinTemp());
+    }
+
+    @Override
+    public TempReading[] toArray() {
+        return (tempQue.toArray());
+    }
+
+    @Override
+    public int queSize() {
+        return (tempQue.queSize());
+    }
+
+    private class DirectoryFileFilter implements FileFilter {
         public boolean accept(File file) {
             String dirName = file.getName();
             String startOfName = dirName.substring(0, 3);
@@ -87,6 +120,6 @@ public class TempSensorImpl implements TempSensor {
         }
 
     }
-
 }
+
 

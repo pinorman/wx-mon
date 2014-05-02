@@ -16,12 +16,12 @@ public class WxMonitor {
     public static void main(String[] args) throws InterruptedException {
         String tProbeId = "28-00000514891a";
         TempSensor tProbe = new TempSensorImpl(tProbeId);
-        final TempSensorQue tempQue = new TempSensorQue(1000);
-        tempQue.add(new Temperature(tProbe.readTemp()));
+        final TempSensorHistory tempQue = new TempSensorHistory(1000);
+        tempQue.add(new TempReading(tProbe.readTemp()));
         TimerTask TempScheduler = new TimerTask() {
             @Override
             public void run() {
-                tempQue.add(new Temperature(tProbe.readTemp(), LocalDateTime.now()));
+                tempQue.add(new TempReading(tProbe.readTemp(), LocalDateTime.now()));
             }
         };
         Timer timer = new Timer(true);
@@ -46,7 +46,7 @@ public class WxMonitor {
                     " Max " + decForm.format(tempQue.getMaxTemp()) +
                     " Min " + decForm.format(tempQue.getMinTemp()));
             System.out.println("Now print out last 50");
-            Temperature tArray[] = tempQue.toArray();
+            TempReading tArray[] = tempQue.toArray();
             int len = tempQue.queSize();
             int begin = 0;
             if (len >= 50) begin = len - 50;
