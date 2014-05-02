@@ -42,7 +42,7 @@ public class WxClient {
         temp = (TempSensor) readData( serverIP, TEMP_PORT);
         wxStation = (RainSensor) readData(serverIP, RAIN_PORT);
 
-        System.out.println("Print out last 50 from history");
+        System.out.println("Print last 50 from history");
         TempReading tArray[] = temp.toArray();
         int len = temp.queSize();
         int begin = 0;
