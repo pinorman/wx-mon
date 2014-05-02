@@ -51,7 +51,7 @@ public class WxMonitor {
             int begin = 0;
             if (len >= 50) begin = len - 50;
             for (int i = begin; i < len; i++) {
-                System.out.println("Index" i + " Temp is " + decForm.format(tArray[i].getTemp()) +
+                System.out.println("Index " i + " Temp is " + decForm.format(tArray[i].getTemp()) +
                         " Time was " + dateForm.format(tArray[i].getTempTime()));
             }
         }
