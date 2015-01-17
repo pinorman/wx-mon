@@ -17,6 +17,15 @@ public class RainSensorHistoryTest {
     }
 
     @Test
+    public void testIncrementRainWithTime() throws Exception {
+        RainSensorHistory r = new RainSensorHistory();
+        r.incrementRain();
+        r.incrementRain( LocalDateTime.now());
+        long interval = r.getWhenStartedRaining().until(r.getLastTimeSawRain(), ChronoUnit.NANOS);
+        Assert.assertEquals("IncrementRain(t): incorrect rain at t",1.5E9 , interval, 0.5E9 ); //
+    }
+
+    @Test
     public void testGetRainPerHour() throws Exception {
         RainSensorHistory r = new RainSensorHistory();
         // check for no rain
@@ -75,10 +84,5 @@ public class RainSensorHistoryTest {
         r.incrementRain();
         r.incrementRain();
         Assert.assertEquals("getWhenStartedRaining date is incorrect ", t.getSecond(), r.getWhenStartedRaining().getSecond(), 1);
-
-
-
     }
-
-
 }

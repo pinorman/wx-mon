@@ -41,6 +41,10 @@ public class RainSensorHistory implements Serializable {
         qRain.addFirst(LocalDateTime.now());
     }
 
+    public void incrementRain(LocalDateTime t) {
+        qRain.addFirst(t);
+    }
+
     /*
      * First call findGapQue looking for a gap
      * then Look for a MINUTE or HOUR delta in time (only supports RainUnit of MINUTE OR HOUR)
@@ -69,6 +73,11 @@ public class RainSensorHistory implements Serializable {
 
     public double getRainLevel() {
         return ((double) qRain.size() * RAIN_STEP);
+    }
+
+    public double getAccumulatedRainLevel(ChronoUnit interval, int gap ) {
+        if (!findGapQue(interval, gap)) return (0.0);
+        return (accumulatedRain * RAIN_STEP);
     }
 
     public long hoursBeenRaining() {

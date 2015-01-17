@@ -11,6 +11,7 @@ public class TempReading implements Serializable {
 
     private double temp;
     private LocalDateTime tempTime;
+    boolean sentToServer;
 
 
     public TempReading(double temp, LocalDateTime time) {
@@ -30,6 +31,15 @@ public class TempReading implements Serializable {
     public void setTemp(double temp) {
         this.temp = temp;
         this.tempTime = LocalDateTime.now();
+        this.sentToServer = false;
+    }
+
+    public void setSentToServer() {
+        this.sentToServer = true;
+    }
+
+    public boolean isSentToServer() {
+        return sentToServer;
     }
 
     public LocalDateTime getTempTime() {
