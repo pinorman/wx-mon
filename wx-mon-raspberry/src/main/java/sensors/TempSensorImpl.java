@@ -5,7 +5,7 @@ import java.io.*;
 /**
  * Created by Paul on 4/20/2014.
  */
-public class TempSensorImpl implements TempSensor, Serializable {
+public class TempSensorImpl implements TempSensor {
 
     private static String w1DirPath = "/sys/bus/w1/devices";
     private static int QUE_DEPTH = 1000;

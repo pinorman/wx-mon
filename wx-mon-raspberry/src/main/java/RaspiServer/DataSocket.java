@@ -3,13 +3,14 @@ package RaspiServer;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
  * Created by Paul on 4/30/2014.
  */
-public class DataSocket<Q> extends Thread {
+public class DataSocket<Q extends Serializable> extends Thread {
 
     private int port;
     private Q que;

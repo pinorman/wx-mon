@@ -1,12 +1,13 @@
 package sensors;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
  * Created by Paul on 4/28/2014.
  */
-public interface RainSensor {
+public interface RainSensor extends Serializable {
     void incrementRain(LocalDateTime t);
 
     double getRainLevel();

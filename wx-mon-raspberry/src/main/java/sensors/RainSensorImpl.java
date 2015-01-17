@@ -4,7 +4,6 @@ import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -12,7 +11,7 @@ import java.time.temporal.ChronoUnit;
 /**
  * Created by Paul on 4/24/2014.
  */
-public class RainSensorImpl implements RainSensor, Serializable {
+public class RainSensorImpl implements RainSensor {
 
 
     /*
