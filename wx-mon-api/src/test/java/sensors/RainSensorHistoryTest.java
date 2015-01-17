@@ -5,6 +5,8 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RainSensorHistoryTest {
 
@@ -19,31 +21,34 @@ public class RainSensorHistoryTest {
     @Test
     public void testIncrementRainWithTime() throws Exception {
         RainSensorHistory r = new RainSensorHistory();
-        r.incrementRain();
-        r.incrementRain( LocalDateTime.now());
+        LocalDateTime baseTime = LocalDateTime.now();
+        r.incrementRain(baseTime);
+        r.incrementRain(baseTime.plusSeconds(1));
         long interval = r.getWhenStartedRaining().until(r.getLastTimeSawRain(), ChronoUnit.NANOS);
-        Assert.assertEquals("IncrementRain(t): incorrect rain at t",1.5E9 , interval, 0.5E9 ); //
+        Assert.assertEquals("IncrementRain(t): incorrect rain at t", 1.0E9, interval, 1.0);
     }
 
     @Test
     public void testGetRainPerHour() throws Exception {
         RainSensorHistory r = new RainSensorHistory();
-        // check for no rain
-        Assert.assertEquals("No Rain --> Rain per hour incorrect ", 0.0, r.getRainPerHour(ChronoUnit.MINUTES), 0.01);
-        r.incrementRain();
-        Thread.sleep(1000);
-        r.incrementRain();
-        Assert.assertEquals("Rain per hour incorrect; too little time for calc ", 0.0, r.getRainPerHour(ChronoUnit.MINUTES), 0.01);
+//        // check for no rain
+//        Assert.assertEquals("No Rain --> Rain per hour incorrect ", 0.0, r.getRainPerHour(ChronoUnit.MINUTES), 0.01);
+//        r.incrementRain();
+//        Thread.sleep(1000);
+//        r.incrementRain();
+//        Assert.assertEquals("Rain per hour incorrect; too little time for calc ", 0.0, r.getRainPerHour(ChronoUnit.MINUTES), 0.01);
+        List<LocalDateTime> times = new ArrayList<>();
+        LocalDateTime time = LocalDateTime.of(2000, 1, 1, 1, 1).minusSeconds(60);
         for (int i = 0; i < 61; i++) {
-            Thread.sleep(1000);
-            r.incrementRain();
-            // r.incrementRain();
+            times.add(time.plusSeconds(i));
+        }
+        for (LocalDateTime t : times) {
+            r.incrementRain(t);
         }
         // - we put in more than a minutes worth, but it should still be 60 seconds apart for the cal
         //  so 63  increments (inclusive) over 62 seconds (approx)
         Assert.assertEquals("Rain per hour incorrect ",  ((63.0 * .01) / 62.0) * 3600,
                 r.getRainPerHour(ChronoUnit.MINUTES), 0.1);
-
     }
 
     @Test
@@ -68,7 +73,6 @@ public class RainSensorHistoryTest {
         r.incrementRain();
         rainSec = r.getLastTimeSawRain().getSecond();
         Assert.assertNotEquals("getLastTimeRained should not match: ", testSec, rainSec);
-
     }
 
     @Test
