@@ -3,6 +3,8 @@ package RaspiServer;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sensors.*;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ import java.util.TimerTask;
  */
 public class WxRaspiServer {
 
+    private static final Logger log = LoggerFactory.getLogger(WxRaspiServer.class);
     private final static String TEMP_PROBE_ID = "28-00000514891a";
     private final static int TEMP_SCAN_INTERVAL = 1000 * 60 * 15;       // 15 minutes
     private final static int TEMP_PORT = 8080;
@@ -62,18 +65,19 @@ public class WxRaspiServer {
         };
         Timer timer = new Timer(true);
         timer.scheduleAtFixedRate(TempScheduler, 0, TEMP_SCAN_INTERVAL);
-        System.out.println("Raspi hardware has been started");
+        log.info("Raspi hardware has been started");
 
         DataSocket<TempSensor> tSocket = new DataSocket<>(tempProbe, TEMP_PORT);
         DataSocket<RainSensor> rSocket = new DataSocket<>(wxStation, RAIN_PORT);
         tSocket.start();
         rSocket.start();
-        for (; ; )
+        for (; ; ) {
             try {
                 Thread.sleep(1000 * 60 * 60); //should be an hour
             } catch (Exception ex) {
-                System.out.println(ex.toString());
+                log.warn("", ex);
             }
+        }
     }
 
 }

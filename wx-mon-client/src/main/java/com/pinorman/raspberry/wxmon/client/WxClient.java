@@ -1,3 +1,7 @@
+package com.pinorman.raspberry.wxmon.client;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sensors.RainSensor;
 import sensors.TempReading;
 import sensors.TempSensor;
@@ -14,6 +18,7 @@ import java.time.temporal.ChronoUnit;
  */
 public class WxClient {
 
+    private static final Logger log = LoggerFactory.getLogger(WxClient.class);
     private final static int TEMP_PORT = 8080;
     private final static int RAIN_PORT = 8081;
 
@@ -42,29 +47,22 @@ public class WxClient {
         if ((temp = (TempSensor) readData(serverIP, TEMP_PORT)) != null &&
                 (wxStation = (RainSensor) readData(serverIP, RAIN_PORT)) != null) {
 
-            System.out.println("Print last 24 hours worth of from history");
+            log.info("Print last 24 hours worth of from history");
             TempReading tArray[] = temp.toArray();
             int len = temp.queSize();
             int begin = 0;
             if (len >= 15 * 4 * 24) begin = len - 15 * 4 * 24;      // 24 hours worth
             for (int i = begin; i < len; i++) {
-                System.out.println("Temp is " + decForm.format(tArray[i].getTemp()) +
-                        " Time was " + dateForm.format(tArray[i].getTempTime()));
+                log.info("Temp is {} Time was {}", decForm.format(tArray[i].getTemp()), dateForm.format(tArray[i].getTempTime()));
             }
-            System.out.println("Overall amount of Rain is: " + decForm.format(wxStation.getRainLevel()));
-            System.out.println("Amount of rain since there's been an 8 hour gap (when it was actually raining) is "
-                    + decForm.format(wxStation.getAccumulatedRainLevel(ChronoUnit.HOURS, 8)));
-            System.out.println("Rate/Hour (by min & Hr): " +
-                    decForm.format(wxStation.getRainPerHour(ChronoUnit.MINUTES)) + " " +
-                    decForm.format(wxStation.getRainPerHour(ChronoUnit.HOURS)));
-            System.out.println("Last time it Rained " + dateForm.format(wxStation.getLastTimeSawRain()));
-            System.out.println("When this rain started " + dateForm.format(wxStation.getWhenStartedRaining()));
-
-            System.out.println("Latest Temp " + decForm.format(temp.getCurrentTemp()) +
-                    " Max " + decForm.format(temp.getMaxTemp()) +
-                    " Min " + decForm.format(temp.getMinTemp()));
+            log.info("Overall amount of Rain is: {}", decForm.format(wxStation.getRainLevel()));
+            log.info("Amount of rain since there's been an 8 hour gap (when it was actually raining) is{} ", decForm.format(wxStation.getAccumulatedRainLevel(ChronoUnit.HOURS, 8)));
+            log.info("Rate/Hour (by min & Hr): {} {}", decForm.format(wxStation.getRainPerHour(ChronoUnit.MINUTES)), decForm.format(wxStation.getRainPerHour(ChronoUnit.HOURS)));
+            log.info("Last time it Rained {}", dateForm.format(wxStation.getLastTimeSawRain()));
+            log.info("When this rain started {}", dateForm.format(wxStation.getWhenStartedRaining()));
+            log.info("Latest Temp {} Max {} Min {}", decForm.format(temp.getCurrentTemp()), decForm.format(temp.getMaxTemp()), decForm.format(temp.getMinTemp()));
         } else {
-            System.out.println("Network error connecting to Raspi");
+            log.warn("Network error connecting to Raspi");
         }
     }
 
@@ -79,12 +77,12 @@ public class WxClient {
             try {
                 obj = inputStream.readObject();
             } catch (ClassNotFoundException ex) {
-                System.out.println("Read object failed on port " + port + " " + ex.toString());
+                log.warn("Read object failed on port {}", port, ex);
             } finally {
                 socket.close();
             }
         } catch (IOException e) {
-            System.out.println("Socket failed on port " + port + " " + e.toString());
+            log.warn("Socket failed on port {}", port, e);
         }
         return obj;
     }
