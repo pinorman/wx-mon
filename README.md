@@ -1,0 +1,2 @@
+Travis CI: [![Build Status](https://travis-ci.org/pinorman/wx-mon.svg)](https://travis-ci.org/pinorman/wx-mon)
+Coveralls: [![Coverage Status](https://coveralls.io/repos/pinorman/wx-mon/badge.svg)](https://coveralls.io/r/pinorman/wx-mon)
