@@ -38,8 +38,8 @@ public class RainSensorImpl implements RainSensor {
     }
 
     @Override
-    public double getRainLevel() {
-        return rainData.getRainLevel();
+    public double getRainTotal() {
+        return rainData.getRainTotal();
 
     }
 

@@ -15,45 +15,62 @@ public class RainSensorHistoryTest {
         RainSensorHistory r = new RainSensorHistory();
         r.incrementRain();
         r.incrementRain();
-        Assert.assertEquals("IncrementRain: incorrect rain amount", 2 * .01, r.getRainLevel(), .01); // .01
+        Assert.assertEquals("IncrementRain: incorrect rain amount", 2 * .01, r.getRainTotal(), .001); // .01
     }
 
     @Test
     public void testIncrementRainWithTime() throws Exception {
         RainSensorHistory r = new RainSensorHistory();
-        LocalDateTime baseTime = LocalDateTime.now();
+        LocalDateTime baseTime = LocalDateTime.of(2000, 1, 1, 0, 0, 0 );
         r.incrementRain(baseTime);
         r.incrementRain(baseTime.plusSeconds(1));
-        long interval = r.getWhenStartedRaining().until(r.getLastTimeSawRain(), ChronoUnit.NANOS);
-        Assert.assertEquals("IncrementRain(t): incorrect rain at t", 1.0E9, interval, 1.0);
-    }
+        Assert.assertEquals("IncrementRainWithTime failed on First increment", 0, r.getWhenStartedRaining().getSecond());
+        Assert.assertEquals("IncrementRainWithTime Failed on following increment", 1, r.getLastTimeSawRain().getSecond());
+   }
 
     @Test
     public void testGetRainPerHour() throws Exception {
         RainSensorHistory r = new RainSensorHistory();
-//        // check for no rain
-//        Assert.assertEquals("No Rain --> Rain per hour incorrect ", 0.0, r.getRainPerHour(ChronoUnit.MINUTES), 0.01);
-//        r.incrementRain();
-//        Thread.sleep(1000);
-//        r.incrementRain();
-//        Assert.assertEquals("Rain per hour incorrect; too little time for calc ", 0.0, r.getRainPerHour(ChronoUnit.MINUTES), 0.01);
         List<LocalDateTime> times = new ArrayList<>();
-        LocalDateTime time = LocalDateTime.of(2000, 1, 1, 1, 1).minusSeconds(60);
-        for (int i = 0; i < 61; i++) {
-            times.add(time.plusSeconds(i));
+        LocalDateTime time;      // 0 seconds is the important part
+        int accumRain = 0;
+        for (int j = 0; j < 10; j++) {
+            for (int i = 0; i < 60; i++) {
+                times.add(LocalDateTime.of(2000, 1, 1, 1, j, i));
+                accumRain++;
+            }
         }
         for (LocalDateTime t : times) {
             r.incrementRain(t);
         }
-        // - we put in more than a minutes worth, but it should still be 60 seconds apart for the cal
-        //  so 63  increments (inclusive) over 62 seconds (approx)
-        Assert.assertEquals("Rain per hour incorrect ",  ((63.0 * .01) / 62.0) * 3600,
-                r.getRainPerHour(ChronoUnit.MINUTES), 0.1);
+        // accumRain over 10 min  = accumRain/10 min
+        // 600/10 =
+        Assert.assertEquals("Rain per hour incorrect ",  (accumRain * .01) /(10*60)*60,
+                r.getRainPerHour(ChronoUnit.MINUTES), 0.01);
     }
 
     @Test
-    public void testGetRainLevel() throws Exception {
-
+    public void testGetRainTotal() throws Exception {
+        RainSensorHistory r = new RainSensorHistory();
+        r.incrementRain();
+        r.incrementRain();
+        Assert.assertEquals("GetRainTotal amount", 2 * .01, r.getRainTotal(), .001); //
+    }
+    @Test
+    public void hoursBeenRaining()throws Exception {
+        RainSensorHistory r = new RainSensorHistory();
+        LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0, 0); //base time
+        r.incrementRain(time);
+        r.incrementRain(time.plusHours(2));
+        Assert.assertEquals("hoursBeenRaining amount", 2, r.hoursBeenRaining(), 0); //
+        List<LocalDateTime> times = new ArrayList<>();
+        for (int i = 5; i < 16; i++) {      // create a gap - add some rain
+            times.add(time.plusHours(i));   // Add a reading every hour
+        }
+        for (LocalDateTime tt : times) {
+            r.incrementRain(tt);
+        }
+       Assert.assertEquals("hoursBeenRaining with a gap wrong", 10, r.hoursBeenRaining(), 0);
     }
 
     @Test
@@ -62,17 +79,15 @@ public class RainSensorHistoryTest {
         LocalDateTime t = r.getLastTimeSawRain();        // result should be MIN time.
         boolean testPass = t.getHour() == 23 && t.getMinute() == 59 && t.getSecond() == 59;
         Assert.assertEquals("getLastTimeRained failed with no rain", true, testPass);
-        r.incrementRain();
-        r.incrementRain();
-        t = LocalDateTime.now();
-        r.incrementRain();
-        int rainSec = r.getLastTimeSawRain().getSecond();
-        int testSec = t.getSecond();
-        Assert.assertEquals("getLastTimeRained is incorrect ", testSec, rainSec, 1);
-        Thread.sleep(2000);
-        r.incrementRain();
-        rainSec = r.getLastTimeSawRain().getSecond();
-        Assert.assertNotEquals("getLastTimeRained should not match: ", testSec, rainSec);
+        List<LocalDateTime> times = new ArrayList<>();
+        LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0, 5); //base time
+        for (int i = 1; i < 10; i++) {
+            times.add(time.plusHours(i));   // Add a reading every hour - seconds fixed at 5
+        }
+        for (LocalDateTime tt : times) {
+            r.incrementRain(tt);
+        }
+     Assert.assertEquals("getLastTimeRained should match: ", 9, r.getLastTimeSawRain().getHour());
     }
 
     @Test
@@ -81,12 +96,21 @@ public class RainSensorHistoryTest {
         LocalDateTime t = r.getWhenStartedRaining();        // result should be MIN time.
         boolean testPass = t.getHour() == 0 && t.getMinute() == 0 && t.getSecond() == 0;
         Assert.assertEquals("getWhenStartedRaining failed with no rain", true, testPass);
-        t = LocalDateTime.now();
-        r.incrementRain();
-        Thread.sleep(2000);
-        r.incrementRain();
-        r.incrementRain();
-        r.incrementRain();
-        Assert.assertEquals("getWhenStartedRaining date is incorrect ", t.getSecond(), r.getWhenStartedRaining().getSecond(), 1);
+        List<LocalDateTime> times = new ArrayList<>();
+        LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0, 5); //base time
+        for (int i = 0; i < 10; i++) {
+            times.add(time.plusHours(i));   // Add a reading every hour - seconds fixed at 5
+        }
+        for (LocalDateTime tt : times) {
+            r.incrementRain(tt);
+        }
+        time = LocalDateTime.of(2000,1,2,0,0,20);  //Add another - gap is a day from previous
+        for (int i = 0; i < 10; i++) {
+            times.add(time.plusSeconds(i));   // Add a reading every second starting at 20
+        }
+        for (LocalDateTime tt : times) {
+            r.incrementRain(tt);
+        }
+            Assert.assertEquals("getWhenStartedRaining date is incorrect ", 20, r.getWhenStartedRaining().getSecond(), 0);
     }
 }

@@ -55,7 +55,7 @@ public class WxClient {
             for (int i = begin; i < len; i++) {
                 log.info("Temp is {} Time was {}", decForm.format(tArray[i].getTemp()), dateForm.format(tArray[i].getTempTime()));
             }
-            log.info("Overall amount of Rain is: {}", decForm.format(wxStation.getRainLevel()));
+            log.info("Overall amount of Rain is: {}", decForm.format(wxStation.getRainTotal()));
             log.info("Amount of rain since there's been an 8 hour gap (when it was actually raining) is{} ", decForm.format(wxStation.getAccumulatedRainLevel(ChronoUnit.HOURS, 8)));
             log.info("Rate/Hour (by min & Hr): {} {}", decForm.format(wxStation.getRainPerHour(ChronoUnit.MINUTES)), decForm.format(wxStation.getRainPerHour(ChronoUnit.HOURS)));
             log.info("Last time it Rained {}", dateForm.format(wxStation.getLastTimeSawRain()));

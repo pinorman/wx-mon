@@ -52,17 +52,21 @@ public class RainSensorHistory implements Serializable {
      * return 0 if the rate cannot be calculated yet.
      */
     public double getRainPerHour(ChronoUnit timePer) {
+        if (qRain.isEmpty()) return (0.0);
         if (timePer != ChronoUnit.MINUTES && timePer != ChronoUnit.HOURS) return (0.0);
-        if (!findGapQue(ChronoUnit.HOURS, RAIN_GAP)) return (0.0);
+        findGapQue(ChronoUnit.HOURS, RAIN_GAP);
         boolean enoughTime;
-        enoughTime = lastTime.until(firstTime, timePer) >= 1;
-        return (enoughTime ? (((double) accumulatedRain * RAIN_STEP) / (double) lastTime.until(firstTime, ChronoUnit.SECONDS)) * 3600.0 : 0.0);
-
+        if (firstTime.until(lastTime, timePer) < 1) return (0.0);  // Rain must be going for 1 time unit to make the ca
+        double rain = (double) (accumulatedRain) * RAIN_STEP / (double) firstTime.until(lastTime, ChronoUnit.SECONDS);
+        if (timePer == ChronoUnit.HOURS)
+            return (rain * 3600);  // seconds to hours
+        return (rain * 60);        // seconds to minutes
     }
 
     public LocalDateTime getWhenStartedRaining() {
-        if (!findGapQue(ChronoUnit.HOURS, RAIN_GAP)) return (LocalDateTime.MIN);
-        return (lastTime);
+        if (qRain.isEmpty()) return (LocalDateTime.MIN);
+        findGapQue(ChronoUnit.HOURS, RAIN_GAP);
+        return (firstTime);
 
     }
 
@@ -71,39 +75,41 @@ public class RainSensorHistory implements Serializable {
         return (qRain.getFirst());
     }
 
-    public double getRainLevel() {
+    public double getRainTotal() {
         return ((double) qRain.size() * RAIN_STEP);
     }
 
-    public double getAccumulatedRainLevel(ChronoUnit interval, int gap ) {
-        if (!findGapQue(interval, gap)) return (0.0);
+    public double getAccumulatedRainLevel(ChronoUnit interval, int gap) {
+        if (qRain.isEmpty()) return (0.0);
+        findGapQue(interval, gap);
         return (accumulatedRain * RAIN_STEP);
     }
 
     public long hoursBeenRaining() {
-        if (!findGapQue(ChronoUnit.HOURS, RAIN_GAP)) return (0);
-        return (lastTime.until(firstTime, ChronoUnit.HOURS));
+        if (qRain.isEmpty()) return (0);
+        findGapQue(ChronoUnit.HOURS, RAIN_GAP);
+        return (firstTime.until(lastTime, ChronoUnit.HOURS));
     }
 
     /*
-     * look  through the que - looking for a gap in rain input (increment) of RAIN_GAP
+     * look  through the que - looking for a gap in rain/date of RAIN_GAP
      * either we find a gap or we reach the beginning of the que.
+     *  Set firstTime and lastTime appropreaitely. from the last rain entry (lastTime) back to either a gap or
+     *  the beginning (firstTime).
+     *
      */
-    private boolean findGapQue(ChronoUnit interval, int gap) {
-        if (qRain.isEmpty()) return (false);
+    private void findGapQue(ChronoUnit interval, int gap) {
         accumulatedRain = 0;
-        Iterator rainIterator = qRain.iterator();
-        firstTime = lastTime = qRain.getFirst();  // last time for an increment
+        Iterator rainIterator = qRain.iterator();   // processed last to first in the Deque
+        lastTime = qRain.getFirst();                // last time is the head
+        LocalDateTime gapBegin = lastTime;
         do {
             accumulatedRain++;
-            lastTime = (LocalDateTime) rainIterator.next();
-        } while (rainIterator.hasNext() && !(lastTime.until(firstTime, interval) >= gap));
-        return (true);
+            firstTime = gapBegin;                              // look between firstTime and gapBegin for gap
+            gapBegin = (LocalDateTime) rainIterator.next();    // move to next time
+        }
+        while (rainIterator.hasNext() && (gapBegin.until(firstTime, interval) < gap));    //have we hit the end or found a gpa?
+        if (!rainIterator.hasNext()) firstTime = gapBegin;     // if we reached the end then first should be set here
     }
-
-    private boolean gapOfTime(LocalDateTime firstT, LocalDateTime lastT) {
-        return (lastT.until(firstT, ChronoUnit.HOURS) >= RAIN_GAP);
-    }
-
 
 }

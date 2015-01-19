@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit;
 public interface RainSensor extends Serializable {
     void incrementRain(LocalDateTime t);
 
-    double getRainLevel();
+    double getRainTotal();
 
     double getRainPerHour(ChronoUnit timePer);
 
