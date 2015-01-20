@@ -28,6 +28,7 @@ public class RainSensorHistory implements Serializable {
 
     /*
     * Constructor -
+    * The Deque is build such that we add to the end of the queue - with .add()
     *
     */
     public RainSensorHistory() {
@@ -38,11 +39,11 @@ public class RainSensorHistory implements Serializable {
     * Simply put the date/time on the que for this increment of rain
     */
     public void incrementRain() {
-        qRain.addFirst(LocalDateTime.now());
+        incrementRain(LocalDateTime.now());
     }
 
     public void incrementRain(LocalDateTime t) {
-        qRain.addFirst(t);
+        qRain.add(t);
     }
 
     /*
@@ -72,7 +73,7 @@ public class RainSensorHistory implements Serializable {
 
     public LocalDateTime getLastTimeSawRain() {
         if (qRain.isEmpty()) return (LocalDateTime.MAX);
-        return (qRain.getFirst());
+        return (qRain.getLast());
     }
 
     public double getRainTotal() {
@@ -100,8 +101,8 @@ public class RainSensorHistory implements Serializable {
      */
     private void findGapQue(ChronoUnit interval, int gap) {
         accumulatedRain = 0;
-        Iterator rainIterator = qRain.iterator();   // processed last to first in the Deque
-        lastTime = qRain.getFirst();                // last time is the head
+        Iterator rainIterator = qRain.descendingIterator();     // processed last to first in the Deque
+        lastTime = qRain.getLast();                             //
         LocalDateTime gapBegin = lastTime;
         do {
             accumulatedRain++;
