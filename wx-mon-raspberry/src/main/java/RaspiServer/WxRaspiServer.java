@@ -17,19 +17,24 @@ import java.util.TimerTask;
 public class WxRaspiServer {
 
     private static final Logger log = LoggerFactory.getLogger(WxRaspiServer.class);
+    private static int QUE_DEPTH = 1000;
     private final static String TEMP_PROBE_ID = "28-00000514891a";
     private final static int TEMP_SCAN_INTERVAL = 1000 * 60 * 15;       // 15 minutes
     private final static int TEMP_PORT = 8080;
     private final static int RAIN_PORT = 8081;
     private final GpioController gpio;
-    private TempSensor tempProbe;
-    private RainSensor wxStation;
+    private TempSensorImpl tempProbe;
+    private TempSensor tSensor;
+    private RainSensor rSensor;
+    private TempSensorHistory tempQue;
+
+
 
     public WxRaspiServer() {
-
+        tSensor = new TempSensorHistory(QUE_DEPTH);
         tempProbe = new TempSensorImpl(TEMP_PROBE_ID);
         gpio = GpioFactory.getInstance();
-        wxStation = new RainSensorImpl(gpio);
+        rSensor = new RainSensorImpl(gpio);
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -45,7 +50,7 @@ public class WxRaspiServer {
         TimerTask TempScheduler = new TimerTask() {
             @Override
             public void run() {
-                double lastTemp = tempProbe.getCurrentTemp();
+         //       double lastTemp = tempProbe.getCurrentTemp();
                 double currentTemp = tempProbe.readTemp();
                 int retryCount = 0;
                 /*
@@ -60,15 +65,15 @@ public class WxRaspiServer {
                 }
                 if (retryCount == 10) return; // Temp sensor didn't read correctly - get out until next time
                 */
-                tempProbe.add(new TempReading(currentTemp, LocalDateTime.now()));
+                tSensor.add(new TempReading(currentTemp, LocalDateTime.now()));
             }
         };
         Timer timer = new Timer(true);
         timer.scheduleAtFixedRate(TempScheduler, 0, TEMP_SCAN_INTERVAL);
         log.info("Raspi hardware has been started");
 
-        DataSocket<TempSensor> tSocket = new DataSocket<>(tempProbe, TEMP_PORT);
-        DataSocket<RainSensor> rSocket = new DataSocket<>(wxStation, RAIN_PORT);
+        DataSocket<TempSensor> tSocket = new DataSocket<>(tSensor, TEMP_PORT);
+        DataSocket<RainSensor> rSocket = new DataSocket<>(rSensor, RAIN_PORT);
         tSocket.start();
         rSocket.start();
         for (; ; ) {

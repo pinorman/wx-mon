@@ -1,6 +1,5 @@
 package sensors;
 
-import java.io.Serializable;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -9,7 +8,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  * Created by Brian on 3/29/2014.
  */
 
-public class TempSensorHistory implements Serializable {
+public class TempSensorHistory implements TempSensor {
 
     public static final int MIN_TEMP = -40;
     private TempReading maxTemp = new TempReading(MIN_TEMP);

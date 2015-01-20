@@ -1,22 +1,21 @@
 package RaspiServer;
 
-import sensors.TempReading;
-import sensors.TempSensor;
-import sensors.TempSensorHistory;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileReader;
 
 /**
  * Created by Paul on 4/20/2014.
  */
-public class TempSensorImpl implements TempSensor {
+public class TempSensorImpl {
 
     private static String w1DirPath = "/sys/bus/w1/devices";
     private static int QUE_DEPTH = 1000;
 
     private File probeFilename;
     private boolean tProbeFound = true;
-    private TempSensorHistory tempQue;
+//    private TempSensorHistory tempQue;
 
 
     public TempSensorImpl(String sensorId) {
@@ -27,7 +26,7 @@ public class TempSensorImpl implements TempSensor {
             System.out.println(ex.getMessage());
             tProbeFound = false;
         } finally {
-            tempQue = new TempSensorHistory(QUE_DEPTH);
+ //           tempQue = new TempSensorHistory(QUE_DEPTH);
         }
 
     }
@@ -39,7 +38,7 @@ public class TempSensorImpl implements TempSensor {
     * If no temp sensor Id is found then we don'tabc have one to record from
     *
     */
-    public TempSensorImpl() {
+   public TempSensorImpl() {
 
         String filePath;
         File dir = new File(w1DirPath);
@@ -54,7 +53,7 @@ public class TempSensorImpl implements TempSensor {
             System.out.println(ex.getMessage());
             tProbeFound = false;
         } finally {
-            tempQue = new TempSensorHistory(QUE_DEPTH);
+//            tempQue = new TempSensorHistory(QUE_DEPTH);
         }
     }
 
@@ -83,9 +82,7 @@ public class TempSensorImpl implements TempSensor {
         }
     }
 
-// This FileFilter selects subdirs with name beginning with 28-
-// Kernel module gives each 1-wire temp sensor a name starting with 28-
-
+/*
     @Override
     public void add(TempReading t) {
         tempQue.add(t);
@@ -115,6 +112,9 @@ public class TempSensorImpl implements TempSensor {
     public int queSize() {
         return (tempQue.queSize());
     }
+*/
+// This FileFilter selects subdirs with name beginning with 28-
+// Kernel module gives each 1-wire temp sensor a name starting with 28-
 
     private class DirectoryFileFilter implements FileFilter {
         public boolean accept(File file) {
