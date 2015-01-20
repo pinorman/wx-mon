@@ -16,16 +16,16 @@ public class TempSensorHistory implements Serializable {
     public static final int MAX_TEMP = 120;
 
     private TempReading minTemp = new TempReading(MAX_TEMP); /* keep a min/max for this queue */
-    private static final int QUE_DEPTH = 10; /* keep this number by default */
+    private static final int QUE_DEPTH = 100; /* keep this number by default */
     private int qDepth;      /* How many readings to keep in the queue*/
     private Deque<TempReading> qTemp;
 
 
-    public TempSensorHistory(int qDepth) {
+    public TempSensorHistory(int depth) {
 
         qTemp = new ConcurrentLinkedDeque<>();
-        if (qDepth > QUE_DEPTH) this.qDepth = qDepth;
-        qDepth = QUE_DEPTH;
+        if (depth > QUE_DEPTH) this.qDepth = depth;
+        else this.qDepth = QUE_DEPTH;
     }
 
     public TempSensorHistory() {

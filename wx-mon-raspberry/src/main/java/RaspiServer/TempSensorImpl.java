@@ -1,4 +1,8 @@
-package sensors;
+package RaspiServer;
+
+import sensors.TempReading;
+import sensors.TempSensor;
+import sensors.TempSensorHistory;
 
 import java.io.*;
 
