@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  * Created by Brian on 3/29/2014.
  */
 
-public class TempSensorHistory implements TempSensor {
+public class TempSensorImpl implements TempSensor {
 
     public static final int MIN_TEMP = -40;
     private TempReading maxTemp = new TempReading(MIN_TEMP);
@@ -20,14 +20,14 @@ public class TempSensorHistory implements TempSensor {
     private Deque<TempReading> qTemp;
 
 
-    public TempSensorHistory(int depth) {
+    public TempSensorImpl(int depth) {
 
         qTemp = new ConcurrentLinkedDeque<>();
         if (depth > QUE_DEPTH) this.qDepth = depth;
         else this.qDepth = QUE_DEPTH;
     }
 
-    public TempSensorHistory() {
+    public TempSensorImpl() {
         this(QUE_DEPTH);
     }
 

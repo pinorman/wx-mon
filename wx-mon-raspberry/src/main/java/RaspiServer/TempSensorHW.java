@@ -1,34 +1,34 @@
 package RaspiServer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
 
+
 /**
  * Created by Paul on 4/20/2014.
  */
-public class TempSensorImpl {
+public class TempSensorHW {
 
+    private static final Logger log = LoggerFactory.getLogger(WxRaspiServer.class);
     private static String w1DirPath = "/sys/bus/w1/devices";
-    private static int QUE_DEPTH = 1000;
 
     private File probeFilename;
     private boolean tProbeFound = true;
-//    private TempSensorHistory tempQue;
 
 
-    public TempSensorImpl(String sensorId) {
+    public TempSensorHW(String sensorId) {
         String filePath = w1DirPath + "/" + sensorId + "/w1_slave";
         try {
             probeFilename = new File(filePath);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             tProbeFound = false;
-        } finally {
- //           tempQue = new TempSensorHistory(QUE_DEPTH);
         }
-
     }
 
     /*
@@ -38,7 +38,7 @@ public class TempSensorImpl {
     * If no temp sensor Id is found then we don'tabc have one to record from
     *
     */
-   public TempSensorImpl() {
+   public TempSensorHW() {
 
         String filePath;
         File dir = new File(w1DirPath);
@@ -50,10 +50,8 @@ public class TempSensorImpl {
         try {
             probeFilename = new File(filePath);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            log.info(ex.getMessage());
             tProbeFound = false;
-        } finally {
-//            tempQue = new TempSensorHistory(QUE_DEPTH);
         }
     }
 
@@ -77,42 +75,11 @@ public class TempSensorImpl {
             }
             return (tempF);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            log.info(ex.getMessage());
             return (-100); // for now
         }
     }
 
-/*
-    @Override
-    public void add(TempReading t) {
-        tempQue.add(t);
-    }
-
-    @Override
-    public double getCurrentTemp() {
-        return (tempQue.getCurrentTemp());
-    }
-
-    @Override
-    public double getMaxTemp() {
-        return (tempQue.getMaxTemp());
-    }
-
-    @Override
-    public double getMinTemp() {
-        return (tempQue.getMinTemp());
-    }
-
-    @Override
-    public TempReading[] toArray() {
-        return (tempQue.toArray());
-    }
-
-    @Override
-    public int queSize() {
-        return (tempQue.queSize());
-    }
-*/
 // This FileFilter selects subdirs with name beginning with 28-
 // Kernel module gives each 1-wire temp sensor a name starting with 28-
 

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * Created by Brian on 3/24/14.
+ * Created by Paul on 3/24/14.
  */
 public class TempReading implements Serializable {
 

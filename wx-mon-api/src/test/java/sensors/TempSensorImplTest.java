@@ -4,12 +4,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Created by Brian on 4/21/2014.
+ * Created by Paul on 4/21/2014.
  */
-public class TempSensorHistoryTest {
+public class TempSensorImplTest {
     @Test
     public void testMax() {
-        TempSensorHistory que = new TempSensorHistory();
+        TempSensorImpl que = new TempSensorImpl();
 
         TempReading temp1 = new TempReading(60);
         TempReading temp2 = new TempReading(45);
@@ -28,7 +28,7 @@ public class TempSensorHistoryTest {
 
     @Test
     public void testMin() {
-        TempSensorHistory que = new TempSensorHistory();
+        TempSensorImpl que = new TempSensorImpl();
 
         TempReading temp1 = new TempReading(60);
         TempReading temp2 = new TempReading(-45);

@@ -13,7 +13,6 @@ import java.time.temporal.ChronoUnit;
  */
 public class RainSensorImpl implements RainSensor {
 
-
     /*
     * Constructor -
     * Create the listener for Pin 2 (for now)
@@ -24,7 +23,6 @@ public class RainSensorImpl implements RainSensor {
     public RainSensorImpl(GpioController gpio) {
 
         final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN);
-        System.out.println("declared pin as input");
 
         myButton.addListener(new GpioPinListenerDigital() {
             @Override

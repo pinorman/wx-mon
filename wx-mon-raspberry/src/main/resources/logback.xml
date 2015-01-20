@@ -12,4 +12,5 @@
     </root>
 
     <logger name="RaspiServer.WxRaspiServer" level="trace" />
+
 </configuration>

@@ -23,16 +23,15 @@ public class WxRaspiServer {
     private final static int TEMP_PORT = 8080;
     private final static int RAIN_PORT = 8081;
     private final GpioController gpio;
-    private TempSensorImpl tempProbe;
+    private TempSensorHW tempProbe;
     private TempSensor tSensor;
     private RainSensor rSensor;
-    private TempSensorHistory tempQue;
 
 
 
     public WxRaspiServer() {
-        tSensor = new TempSensorHistory(QUE_DEPTH);
-        tempProbe = new TempSensorImpl(TEMP_PROBE_ID);
+        tSensor = new TempSensorImpl(QUE_DEPTH);
+        tempProbe = new TempSensorHW(TEMP_PROBE_ID);
         gpio = GpioFactory.getInstance();
         rSensor = new RainSensorImpl(gpio);
     }
