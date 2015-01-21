@@ -4,14 +4,11 @@ import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-
 
 /**
  * Created by Paul on 4/24/2014.
  */
-public class RainSensorImpl implements RainSensor {
+public class RainSensorImpl {
 
     /*
     * Constructor -
@@ -34,7 +31,7 @@ public class RainSensorImpl implements RainSensor {
 
         });
     }
-
+/*
     @Override
     public double getRainTotal() {
         return rainData.getRainTotal();
@@ -65,4 +62,5 @@ public class RainSensorImpl implements RainSensor {
     public double getAccumulatedRainLevel(ChronoUnit interval, int gap) {
         return (rainData.getAccumulatedRainLevel(interval, gap));
     }
+    */
 }

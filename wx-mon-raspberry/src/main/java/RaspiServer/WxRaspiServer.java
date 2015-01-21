@@ -1,8 +1,9 @@
 package RaspiServer;
 
 
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sensors.*;
@@ -33,8 +34,21 @@ public class WxRaspiServer {
         tSensor = new TempSensorImpl(QUE_DEPTH);
         tempProbe = new TempSensorHW(TEMP_PROBE_ID);
         gpio = GpioFactory.getInstance();
-        rSensor = new RainSensorImpl(gpio);
-    }
+//        rSensor = new RainSensorImpl(gpio);
+        rSensor = new RainSensorHistory();
+
+        final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN);
+
+            myButton.addListener(new GpioPinListenerDigital() {
+                @Override
+                public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+                    if (event.getState() == PinState.HIGH) rSensor.incrementRain();
+                    // display pin state on console
+                    //System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
+                }
+
+            });
+        }
 
     public static void main(String[] args) throws InterruptedException {
         WxRaspiServer server = new WxRaspiServer();

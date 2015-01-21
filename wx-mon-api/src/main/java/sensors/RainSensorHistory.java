@@ -1,6 +1,5 @@
 package sensors;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Deque;
@@ -11,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 /**
  * Created by Paul on 4/14/2014.
  */
-public class RainSensorHistory implements Serializable {
+public class RainSensorHistory implements RainSensor {
 
     private final double RAIN_STEP = 0.01; // 1/100 of an inch rain sensor
     private final int RAIN_GAP = 2; // is the gap in hours in the que (between dates)
