@@ -60,7 +60,7 @@ public class WxClient {
             log.info("Rate/Hour (by min & Hr): {} {}", decForm.format(wxStation.getRainPerHour(ChronoUnit.MINUTES)), decForm.format(wxStation.getRainPerHour(ChronoUnit.HOURS)));
             log.info("Last time it Rained {}", dateForm.format(wxStation.getLastTimeSawRain()));
             log.info("When this rain started {}", dateForm.format(wxStation.getWhenStartedRaining()));
-            log.info("Latest Temp {} Max {} Min {}", decForm.format(temp.getCurrentTemp()), decForm.format(temp.getMaxTemp()), decForm.format(temp.getMinTemp()));
+//            log.info("Latest Temp {} Max {} Min {}", decForm.format(temp.getCurrentTemp()), decForm.format(temp.getMaxTemp()), decForm.format(temp.getMinTemp()));
         } else {
             log.warn("Network error connecting to Raspi");
         }
