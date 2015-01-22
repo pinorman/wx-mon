@@ -1,5 +1,6 @@
 package sensors;
 
+import java.time.LocalDateTime;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -11,42 +12,25 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class TempSensorImpl implements TempSensor {
 
     public static final int MIN_TEMP = -40;
-    private TempReading maxTemp = new TempReading(MIN_TEMP);
     public static final int MAX_TEMP = 120;
+    private TempReading maxTemp = new TempReading(MIN_TEMP);
 
     private TempReading minTemp = new TempReading(MAX_TEMP); /* keep a min/max for this queue */
-    private static final int QUE_DEPTH = 100; /* keep this number by default */
-    private int qDepth;      /* How many readings to keep in the queue*/
     private Deque<TempReading> qTemp;
 
 
-    public TempSensorImpl(int depth) {
+    public TempSensorImpl() {
 
         qTemp = new ConcurrentLinkedDeque<>();
-        if (depth > QUE_DEPTH) this.qDepth = depth;
-        else this.qDepth = QUE_DEPTH;
-    }
-
-    public TempSensorImpl() {
-        this(QUE_DEPTH);
-    }
-
-    private boolean queEmpty() {
-        return (qTemp.size() < 1);
     }
 
 
     public void add(TempReading t) {
         qTemp.add(t);
-        double temp = t.getTemp();
-        if (temp > maxTemp.getTemp()) {
-            maxTemp.setTemp(temp);
-        }
-        if (temp < minTemp.getTemp()) {
-            minTemp.setTemp(temp);
-        }
-        /* keep the queue at the correct length */
-        if (qTemp.size() > qDepth) qTemp.removeFirst();  /* throw the oldest away */
+    }
+
+    private boolean queEmpty() {
+        return (qTemp.size() < 1);
     }
 
     public int queSize() {
@@ -62,14 +46,71 @@ public class TempSensorImpl implements TempSensor {
 
     }
 
+    /*
+      Returns the maxium temperature found between the two dates give.
+      If the begTime is before the first date on the que, the first temp on the que will be used.
+      if the endTime is after the last date on the que then the last temp will be used.
+      returns MIN_TEMP if
+           endTime is before the first date in the que or
+           begTim is after the last date in the que
+     */
+    public double getMaxTemp(LocalDateTime userBeginDate, LocalDateTime userEndDate) {
 
-    public double getMaxTemp() {
-        return (maxTemp.getTemp());
+        double tMax = MIN_TEMP;
+        if (this.queEmpty()) return (tMax);
+
+        LocalDateTime qBeginDate, qEndDate;
+        qBeginDate = qTemp.getFirst().getTempTime();
+        qEndDate = qTemp.getLast().getTempTime();
+
+        // Test some end conditions
+        if (userEndDate.isBefore(qBeginDate) || userBeginDate.isAfter(qEndDate)) {
+            return (tMax);
+        }
+        TempReading tArray[] = this.toArray();
+        int len = this.queSize();
+        LocalDateTime tArrayValue;
+        for (int i = 0; i < len; i++) {
+            tArrayValue = tArray[i].getTempTime();
+            if ((tArrayValue.isAfter(userBeginDate) || tArrayValue.equals(userBeginDate)) &&
+                    (tArrayValue.isBefore(userEndDate) || tArrayValue.equals(userEndDate))) {               // the test or "equals" is a bit overkill, but it made testing easier
+                if (tMax < tArray[i].getTemp()) {
+                    tMax = tArray[i].getTemp();
+                }
+
+            }
+        }
+        return (tMax);
     }
 
 
-    public double getMinTemp() {
-        return (minTemp.getTemp());
+    public double getMinTemp(LocalDateTime userBeginDate, LocalDateTime userEndDate) {
+
+        double tMin = MAX_TEMP;
+        if (this.queEmpty()) return (tMin);
+
+        LocalDateTime qBeginDate, qEndDate;
+        qBeginDate = qTemp.getFirst().getTempTime();
+        qEndDate = qTemp.getLast().getTempTime();
+
+        // Test some end conditions
+        if (userEndDate.isBefore(qBeginDate) || userBeginDate.isAfter(qEndDate)) {
+            return (tMin);
+        }
+        TempReading tArray[] = this.toArray();
+        int len = this.queSize();
+        LocalDateTime tArrayValue;
+        for (int i = 0; i < len; i++) {
+            tArrayValue = tArray[i].getTempTime();
+            if ((tArrayValue.isAfter(userBeginDate) || tArrayValue.equals(userBeginDate)) &&
+                    (tArrayValue.isBefore(userEndDate) || tArrayValue.equals(userEndDate))) {               // the test or "equals" is a bit overkill, but it made testing easier
+                if (tMin > tArray[i].getTemp()) {
+                    tMin = tArray[i].getTemp();
+                }
+
+            }
+        }
+        return (tMin);
     }
 }
 
