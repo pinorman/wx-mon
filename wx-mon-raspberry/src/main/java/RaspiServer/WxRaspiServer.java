@@ -30,7 +30,7 @@ public class WxRaspiServer {
 
 
     public WxRaspiServer() {
-        tSensor = new TempSensorImpl(QUE_DEPTH);
+        tSensor = new TempSensorImpl();
         tempProbe = new TempSensorHW(TEMP_PROBE_ID);
         rSensor = new RainSensorHistory();
 
