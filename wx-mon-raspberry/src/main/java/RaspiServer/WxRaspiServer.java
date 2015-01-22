@@ -29,32 +29,28 @@ public class WxRaspiServer {
     private RainSensor rSensor;
 
 
-
     public WxRaspiServer() {
         tSensor = new TempSensorImpl(QUE_DEPTH);
         tempProbe = new TempSensorHW(TEMP_PROBE_ID);
-        gpio = GpioFactory.getInstance();
-//        rSensor = new RainSensorImpl(gpio);
         rSensor = new RainSensorHistory();
 
+        gpio = GpioFactory.getInstance();
         final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN);
 
-            myButton.addListener(new GpioPinListenerDigital() {
-                @Override
-                public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-                    if (event.getState() == PinState.HIGH) rSensor.incrementRain();
-                    // display pin state on console
-                    //System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
-                }
+        myButton.addListener(new GpioPinListenerDigital() {
+            @Override
+            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+                if (event.getState() == PinState.HIGH) rSensor.incrementRain();
+                // display pin state on console
+                //System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
+            }
 
-            });
-        }
+        });
+    }
 
     public static void main(String[] args) throws InterruptedException {
         WxRaspiServer server = new WxRaspiServer();
         server.startServer();
-
-
     }
 
     public void startServer() {
@@ -63,7 +59,7 @@ public class WxRaspiServer {
         TimerTask TempScheduler = new TimerTask() {
             @Override
             public void run() {
-         //       double lastTemp = tempProbe.getCurrentTemp();
+                //       double lastTemp = tempProbe.getCurrentTemp();
                 double currentTemp = tempProbe.readTemp();
                 int retryCount = 0;
                 /*
