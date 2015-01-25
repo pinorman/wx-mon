@@ -13,9 +13,7 @@ public class TempHistoryImpl implements TempHistory {
 
     public static final int MIN_TEMP = -40;
     public static final int MAX_TEMP = 120;
-    private TempReading maxTemp = new TempReading(MIN_TEMP);
 
-    private TempReading minTemp = new TempReading(MAX_TEMP); /* keep a min/max for this queue */
     private Deque<TempReading> qTemp;
 
 

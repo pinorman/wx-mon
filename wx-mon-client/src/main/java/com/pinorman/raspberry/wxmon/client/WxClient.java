@@ -2,9 +2,9 @@ package com.pinorman.raspberry.wxmon.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sensors.RainSensor;
-import sensors.TempReading;
-import sensors.TempSensor;
+import com.pinnorman.raspberry.wxmon.sensors.RainHistory;
+import com.pinnorman.raspberry.wxmon.sensors.TempReading;
+import com.pinnorman.raspberry.wxmon.sensors.TempHistory;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -23,11 +23,11 @@ public class WxClient {
     private final static int RAIN_PORT = 8081;
 
     DecimalFormat decForm = new DecimalFormat("##0.00");
-    DateTimeFormatter dateForm = DateTimeFormatter.ofPattern("yyyy-MM-d H:m:s");
+    DateTimeFormatter dateForm = DateTimeFormatter.ofPattern("yyyy-MM-d H:m:ss.nnnnnnnnn");
 
 
-    private TempSensor temp;
-    private RainSensor wxStation;
+    private TempHistory temp;
+    private RainHistory wxStation;
 
 
     public WxClient() {
@@ -44,8 +44,8 @@ public class WxClient {
 
     public void getAndDisplayData(String serverIP) {
 
-        if ((temp = (TempSensor) readData(serverIP, TEMP_PORT)) != null &&
-                (wxStation = (RainSensor) readData(serverIP, RAIN_PORT)) != null) {
+        if ((temp = (TempHistory) readData(serverIP, TEMP_PORT)) != null &&
+                (wxStation = (RainHistory) readData(serverIP, RAIN_PORT)) != null) {
 
             log.info("Print last 24 hours worth of from history");
             TempReading tArray[] = temp.toArray();
