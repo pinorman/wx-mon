@@ -1,4 +1,4 @@
-package sensors;
+package com.pinnorman.raspberry.wxmon.sensors;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 /**
  * Created by Paul on 4/14/2014.
  */
-public class RainSensorHistory implements RainSensor {
+public class RainHistoryImpl implements RainHistory {
 
     private final double RAIN_STEP = 0.01; // 1/100 of an inch rain sensor
     private final int RAIN_GAP = 2; // is the gap in hours in the que (between dates)
@@ -30,7 +30,7 @@ public class RainSensorHistory implements RainSensor {
     * The Deque is build such that we add to the end of the queue - with .add()
     *
     */
-    public RainSensorHistory() {
+    public RainHistoryImpl() {
         qRain = new ConcurrentLinkedDeque<>();
     }
 

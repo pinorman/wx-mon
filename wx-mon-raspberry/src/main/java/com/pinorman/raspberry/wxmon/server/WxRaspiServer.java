@@ -1,9 +1,10 @@
-package RaspiServer;
+package com.pinorman.raspberry.wxmon.server;
 
 
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import com.pinnorman.raspberry.wxmin.sensors.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sensors.*;
@@ -25,14 +26,14 @@ public class WxRaspiServer {
     private final static int RAIN_PORT = 8081;
     private final GpioController gpio;
     private TempSensorHW tempProbe;
-    private TempSensor tSensor;
-    private RainSensor rSensor;
+    private TempHistory tSensor;
+    private RainHistory rSensor;
 
 
     public WxRaspiServer() {
-        tSensor = new TempSensorImpl();
+        tSensor = new TempHistoryImpl();
         tempProbe = new TempSensorHW(TEMP_PROBE_ID);
-        rSensor = new RainSensorHistory();
+        rSensor = new RainHistoryImpl();
 
         gpio = GpioFactory.getInstance();
         final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN);
@@ -81,8 +82,8 @@ public class WxRaspiServer {
         timer.scheduleAtFixedRate(TempScheduler, 0, TEMP_SCAN_INTERVAL);
         log.info("Raspi hardware has been started");
 
-        DataSocket<TempSensor> tSocket = new DataSocket<>(tSensor, TEMP_PORT);
-        DataSocket<RainSensor> rSocket = new DataSocket<>(rSensor, RAIN_PORT);
+        DataSocket<TempHistory> tSocket = new DataSocket<>(tSensor, TEMP_PORT);
+        DataSocket<RainHistory> rSocket = new DataSocket<>(rSensor, RAIN_PORT);
         tSocket.start();
         rSocket.start();
         for (; ; ) {

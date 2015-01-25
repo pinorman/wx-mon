@@ -1,4 +1,4 @@
-package sensors;
+package com.pinnorman.raspberry.wxmon.sensors;
 
 import java.time.LocalDateTime;
 import java.util.Deque;
@@ -6,10 +6,10 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 
 /**
- * Created by Brian on 3/29/2014.
+ * Created by Paul on 3/29/2014.
  */
 
-public class TempSensorImpl implements TempSensor {
+public class TempHistoryImpl implements TempHistory {
 
     public static final int MIN_TEMP = -40;
     public static final int MAX_TEMP = 120;
@@ -19,7 +19,7 @@ public class TempSensorImpl implements TempSensor {
     private Deque<TempReading> qTemp;
 
 
-    public TempSensorImpl() {
+    public TempHistoryImpl() {
 
         qTemp = new ConcurrentLinkedDeque<>();
     }

@@ -1,4 +1,4 @@
-package sensors;
+package com.pinnorman.raspberry.wxmon.sensors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

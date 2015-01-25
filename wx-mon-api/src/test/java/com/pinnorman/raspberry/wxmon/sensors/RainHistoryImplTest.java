@@ -1,4 +1,4 @@
-package sensors;
+package com.pinnorman.raspberry.wxmon.sensors;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -8,11 +8,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RainSensorHistoryTest {
+public class RainHistoryImplTest {
 
     @Test
     public void testIncrementRain() throws Exception {
-        RainSensorHistory r = new RainSensorHistory();
+        RainHistoryImpl r = new RainHistoryImpl();
         r.incrementRain();
         r.incrementRain();
         Assert.assertEquals("IncrementRain: incorrect rain amount", 2 * .01, r.getRainTotal(), .001); // .01
@@ -20,7 +20,7 @@ public class RainSensorHistoryTest {
 
     @Test
     public void testIncrementRainWithTime() throws Exception {
-        RainSensorHistory r = new RainSensorHistory();
+        RainHistoryImpl r = new RainHistoryImpl();
         LocalDateTime baseTime = LocalDateTime.of(2000, 1, 1, 0, 0, 0 );
         r.incrementRain(baseTime);
         r.incrementRain(baseTime.plusSeconds(1));
@@ -30,7 +30,7 @@ public class RainSensorHistoryTest {
 
     @Test
     public void testGetRainPerHour() throws Exception {
-        RainSensorHistory r = new RainSensorHistory();
+        RainHistoryImpl r = new RainHistoryImpl();
         List<LocalDateTime> times = new ArrayList<>();
         LocalDateTime time;      // 0 seconds is the important part
         int accumRain = 0;
@@ -51,14 +51,14 @@ public class RainSensorHistoryTest {
 
     @Test
     public void testGetRainTotal() throws Exception {
-        RainSensorHistory r = new RainSensorHistory();
+        RainHistoryImpl r = new RainHistoryImpl();
         r.incrementRain();
         r.incrementRain();
         Assert.assertEquals("GetRainTotal amount", 2 * .01, r.getRainTotal(), .001); //
     }
     @Test
     public void hoursBeenRaining()throws Exception {
-        RainSensorHistory r = new RainSensorHistory();
+        RainHistoryImpl r = new RainHistoryImpl();
         LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0, 0); //base time
         r.incrementRain(time);
         r.incrementRain(time.plusHours(2));
@@ -75,7 +75,7 @@ public class RainSensorHistoryTest {
 
     @Test
     public void getLastTimeSawRained() throws Exception {
-        RainSensorHistory r = new RainSensorHistory();
+        RainHistoryImpl r = new RainHistoryImpl();
         LocalDateTime t = r.getLastTimeSawRain();        // result should be MIN time.
         boolean testPass = t.getHour() == 23 && t.getMinute() == 59 && t.getSecond() == 59;
         Assert.assertEquals("getLastTimeRained failed with no rain", true, testPass);
@@ -92,7 +92,7 @@ public class RainSensorHistoryTest {
 
     @Test
     public void getWhenStartedRaining() throws Exception {
-        RainSensorHistory r = new RainSensorHistory();
+        RainHistoryImpl r = new RainHistoryImpl();
         LocalDateTime t = r.getWhenStartedRaining();        // result should be MIN time.
         boolean testPass = t.getHour() == 0 && t.getMinute() == 0 && t.getSecond() == 0;
         Assert.assertEquals("getWhenStartedRaining failed with no rain", true, testPass);

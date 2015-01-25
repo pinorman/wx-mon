@@ -1,4 +1,4 @@
-package sensors;
+package com.pinnorman.raspberry.wxmon.sensors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -7,7 +7,7 @@ import java.time.temporal.ChronoUnit;
 /**
  * Created by Paul on 4/28/2014.
  */
-public interface RainSensor extends Serializable {
+public interface RainHistory extends Serializable {
     void incrementRain(LocalDateTime t);
     void incrementRain();
 

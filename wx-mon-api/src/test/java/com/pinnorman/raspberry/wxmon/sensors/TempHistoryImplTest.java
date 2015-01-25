@@ -1,4 +1,4 @@
-package sensors;
+package com.pinnorman.raspberry.wxmon.sensors;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,32 +10,32 @@ import java.util.List;
 /**
  * Created by Paul on 4/21/2014.
  */
-public class TempSensorImplTest {
+public class TempHistoryImplTest {
 
     @Test
     public void testAdd() throws Exception {
-        TempSensorImpl que = new TempSensorImpl();
+        TempHistoryImpl que = new TempHistoryImpl();
 
 
     }
 
     @Test
     public void testQueSize() throws Exception {
-        TempSensorImpl que = new TempSensorImpl();
+        TempHistoryImpl que = new TempHistoryImpl();
 
 
     }
 
     @Test
     public void testToArray() throws Exception {
-        TempSensorImpl que = new TempSensorImpl();
+        TempHistoryImpl que = new TempHistoryImpl();
 
 
     }
 
     @Test
     public void testGetCurrentTemp() throws Exception {
-        TempSensorImpl que = new TempSensorImpl();
+        TempHistoryImpl que = new TempHistoryImpl();
 
         Assert.assertEquals("testGetCurrentTemp failed with empty que", que.getCurrentTemp(), -40, 0.0);
         TempReading t1 = new TempReading(20, LocalDateTime.now());
@@ -49,7 +49,7 @@ public class TempSensorImplTest {
 
     @Test
     public void testGetMaxTemp() throws Exception {
-        TempSensorImpl que = new TempSensorImpl();
+        TempHistoryImpl que = new TempHistoryImpl();
 
         Assert.assertEquals("testGetMaxTemp: Max temperature is incorrect with que empty", -40,
                 que.getMaxTemp(LocalDateTime.of(2000, 1, 1, 0, 0, 0), LocalDateTime.of(2000, 1, 2, 0, 1, 0)), 0.0);
@@ -96,7 +96,7 @@ public class TempSensorImplTest {
 
     @Test
     public void testGetMinTemp() throws Exception {
-        TempSensorImpl que = new TempSensorImpl();
+        TempHistoryImpl que = new TempHistoryImpl();
 
         Assert.assertEquals("testGetMinTesmp: Max temperature is incorrect with que empty", 120,
                 que.getMinTemp(LocalDateTime.of(2000, 1, 1, 0, 0, 0), LocalDateTime.of(2000, 1, 2, 0, 1, 0)), 0.0);
