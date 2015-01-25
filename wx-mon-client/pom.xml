@@ -29,7 +29,7 @@
                 <configuration>
                     <mainClass>com.pinorman.raspberry.wxmon.client.WxClient</mainClass>
                     <arguments>
-                        <argument>192.168.1.106</argument>
+                        <argument>${raspberry.address}</argument>
                     </arguments>
                 </configuration>
             </plugin>
