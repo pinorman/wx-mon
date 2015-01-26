@@ -108,16 +108,25 @@ public class WxRaspiServer {
         timer.scheduleAtFixedRate(TempScheduler, 0, TEMP_SCAN_INTERVAL);
         log.info("Raspi hardware has been started");
 
-        DataSocket<TempHistory> tSocket = new DataSocket<>(tSensor, TEMP_PORT);
-        DataSocket<RainHistory> rSocket = new DataSocket<>(rSensor, RAIN_PORT);
-        tSocket.start();
-        rSocket.start();
+//        WriteDataSocket<TempHistory> tSocket = new WriteDataSocket<>(tSensor, TEMP_PORT);
+//        WriteDataSocket<RainHistory> rSocket = new WriteDataSocket<>(rSensor, RAIN_PORT);
+//        tSocket.start();
+//        rSocket.start();
+        ServerCommand cmd;
+        WxCmdDataSocket wxSocket = new WxCmdDataSocket<>(TEMP_PORT);
         for (; ; ) {
-            try {
-                Thread.sleep(1000 * 60 * 60); //should be an hour
-            } catch (Exception ex) {
-                log.warn("", ex);
-            }
+            log.info("waiting for command from socket");
+            wxSocket.waitOnAccept();
+            cmd = (ServerCommand) wxSocket.readData();
+
+            if (cmd.getCommand() == ServerCommand.CmdType.TEMPERATURE)
+                wxSocket.writeData(tSensor);
+            else wxSocket.writeData(rSensor);
+//            try {
+//                Thread.sleep(1000 * 60 * 60); //should be an hour
+//            } catch (Exception ex) {
+//                log.warn("", ex);
+//            }
         }
     }
 

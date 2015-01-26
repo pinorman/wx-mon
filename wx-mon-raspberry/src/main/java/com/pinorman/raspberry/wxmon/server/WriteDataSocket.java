@@ -10,12 +10,12 @@ import java.net.Socket;
 /**
  * Created by Paul on 4/30/2014.
  */
-public class DataSocket<Q extends Serializable> extends Thread {
+public class WriteDataSocket<Q extends Serializable> extends Thread {
 
     private int port;
     private Q que;
 
-    public DataSocket(Q q, int p) {
+    public WriteDataSocket(Q q, int p) {
         port = p;
         que = q;
     }
