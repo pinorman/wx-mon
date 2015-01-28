@@ -1,4 +1,4 @@
-package com.pinnorman.raspberry.wxmon.sensors;
+package com.pinorman.raspberry.wxmon.sensors;
 
 import org.junit.Assert;
 import org.junit.Test;

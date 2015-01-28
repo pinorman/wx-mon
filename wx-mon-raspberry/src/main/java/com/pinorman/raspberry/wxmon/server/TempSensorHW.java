@@ -14,7 +14,7 @@ import java.io.FileReader;
  */
 public class TempSensorHW {
 
-    private static final Logger log = LoggerFactory.getLogger(WxRaspiServer.class);
+    private static final Logger log = LoggerFactory.getLogger(TempSensorHW.class);
     private static String w1DirPath = "/sys/bus/w1/devices";
 
     private File probeFilename;
@@ -26,7 +26,7 @@ public class TempSensorHW {
         try {
             probeFilename = new File(filePath);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            log.info("", ex);
             tProbeFound = false;
         }
     }
