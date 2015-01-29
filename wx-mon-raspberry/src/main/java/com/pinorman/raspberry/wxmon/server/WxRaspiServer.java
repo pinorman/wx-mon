@@ -35,13 +35,15 @@ public class WxRaspiServer {
 
     public WxRaspiServer() {
         tSensor = new TempHistoryImpl();
-        tempProbe = new TempSensorHW(TEMP_PROBE_ID);
-        rSensor = new RainHistoryImpl();
-
         /*
         Process the Temperature file and add to history
          */
         readTempDataBase();
+        tempProbe = new TempSensorHW(TEMP_PROBE_ID);
+
+        rSensor = new RainHistoryImpl();
+// at some point we will read in raindb as well
+
         initSensors();
 
 
