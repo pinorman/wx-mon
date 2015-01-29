@@ -8,7 +8,6 @@ import com.pinorman.raspberry.wxmon.sensors.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import java.io.*;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
@@ -32,7 +31,7 @@ public class WxRaspiServer {
     private RainHistory rSensor;
 
 
-    private String tFile = "TemperatureDB.txt";
+    private String tFile = "temperatureDB.txt";
 
     public WxRaspiServer() {
         tSensor = new TempHistoryImpl();
@@ -42,17 +41,8 @@ public class WxRaspiServer {
         /*
         Process the Temperature file and add to history
          */
-
-        double temp;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(" yyyy-MM-d H:m:ss.nnnnnnnnn");       // notice the " " in front of yyyy
-        try (Scanner s = new Scanner(new File(tFile))) {
-            while (s.hasNext()) {
-                temp = s.nextDouble();          // read in temp
-                tSensor.add(new TempReading(temp, LocalDateTime.parse(s.nextLine(), formatter))); // read in date and add in the records we parse from the file
-            }
-        } catch (IOException e) {
-            log.warn("Error reading Temperature file", e);
-        }
+        readTempDataBase();
+        initSensors();
 
 
         gpio = GpioFactory.getInstance();
@@ -69,13 +59,39 @@ public class WxRaspiServer {
         });
     }
 
-
     public static void main(String[] args) throws InterruptedException {
         WxRaspiServer server = new WxRaspiServer();
         server.startServer();
     }
 
+
     public void startServer() {
+
+
+        ServerCommand cmd = null;
+        WxCmdDataSocket<Serializable> wxSocket = new WxCmdDataSocket<>(WX_PORT);
+        for (; ; ) {
+            wxSocket.accept();        // wait on caller -
+
+            log.info("waiting for command from socket");
+            while ( (cmd = (ServerCommand)wxSocket.readData()) != null ) {      // Process data while we are still connected
+
+                log.info("cmd is {}", cmd.getCommand());
+                if (cmd.getCommand() == ServerCommand.CmdType.TEMPERATURE) {
+                    log.info("Send temp data back");
+                    wxSocket.writeData(tSensor);
+                }
+                if (cmd.getCommand() == ServerCommand.CmdType.RAIN) {
+                    log.info("Send Rain Data back");
+                    wxSocket.writeData(rSensor);
+                }
+            }
+
+
+        }
+    }
+
+    private void initSensors() {
         DecimalFormat decForm = new DecimalFormat("##0.00");
         DateTimeFormatter dateForm = DateTimeFormatter.ofPattern("yyyy-MM-d H:m:ss.nnnnnnnnn");
 
@@ -101,28 +117,19 @@ public class WxRaspiServer {
         Timer timer = new Timer(true);
         timer.scheduleAtFixedRate(TempScheduler, 0, TEMP_SCAN_INTERVAL);
         log.info("Raspi hardware has been started");
+    }
 
-
-        ServerCommand cmd = null;
-        WxCmdDataSocket<Serializable> wxSocket = new WxCmdDataSocket<>(WX_PORT);
-        for (; ; ) {
-            wxSocket.accept();        // wait on caller -
-
-            log.info("waiting for command from socket");
-            while ( (cmd = (ServerCommand)wxSocket.readData()) != null ) {      // Process data while we are still connected
-
-                log.info("cmd is {}", cmd.getCommand());
-                if (cmd.getCommand() == ServerCommand.CmdType.TEMPERATURE) {
-                    log.info("Send temp data back");
-                    wxSocket.writeData(tSensor);
-                }
-                if (cmd.getCommand() == ServerCommand.CmdType.RAIN) {
-                    log.info("Send Rain Data back");
-                    wxSocket.writeData(rSensor);
-                }
+    private void readTempDataBase() {
+        double temp;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(" yyyy-MM-d H:m:ss.nnnnnnnnn");       // notice the " " in front of yyyy
+        log.info("Read in any existing temperature data");
+        try (Scanner s = new Scanner(new File(tFile))) {
+            while (s.hasNext()) {
+                temp = s.nextDouble();          // read in temp
+                tSensor.add(new TempReading(temp, LocalDateTime.parse(s.nextLine(), formatter))); // read in date and add in the records we parse from the file
             }
-
-
+        } catch (IOException e) {
+            log.warn("Error reading Temperature file", e);
         }
     }
 
