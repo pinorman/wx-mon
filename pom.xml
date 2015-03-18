@@ -9,9 +9,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>wx-mon-api</module>
-        <module>wx-mon-raspberry</module>
-        <module>wx-mon-client</module>
+        <module>api</module>
+        <module>raspberry</module>
+        <module>client</module>
     </modules>
 
     <properties>
