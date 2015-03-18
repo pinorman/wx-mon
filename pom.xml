@@ -9,9 +9,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>api</module>
-        <module>raspberry</module>
         <module>client</module>
+        <module>raspberry</module>
+        <module>spi</module>
     </modules>
 
     <properties>
