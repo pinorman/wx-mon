@@ -3,12 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.pinorman.raspberry</groupId>
-        <artifactId>wx-mon-parent</artifactId>
+        <groupId>com.pinorman.wx-mon</groupId>
+        <artifactId>parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>wx-mon-api</artifactId>
+    <artifactId>spi</artifactId>
+    <name>Weather Monitor SPI</name>
 
     <packaging>jar</packaging>
 
