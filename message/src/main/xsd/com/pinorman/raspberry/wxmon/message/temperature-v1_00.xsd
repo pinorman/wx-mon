@@ -1,8 +1,4 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-            xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-            jaxb:extensionBindingPrefixes="xjc"
-            jaxb:version="2.1"
             xmlns:sub="http://www.pinorman.com/raspberry/wxmon/message/v1_00/xml"
             targetNamespace="http://www.pinorman.com/raspberry/wxmon/message/v1_00/xml"
             version="1.00">
