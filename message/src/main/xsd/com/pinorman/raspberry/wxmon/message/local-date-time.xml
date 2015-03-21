@@ -1,0 +1,11 @@
+<jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+               jaxb:extensionBindingPrefixes="xjc"
+               jaxb:version="2.1">
+    <jaxb:bindings>
+        <jaxb:globalBindings>
+            <xjc:javaType name="java.time.LocalDateTime" xmlType="xsd:dateTime"
+                          adapter="com.pinorman.raspberry.wxmon.message.LocalDateTimeXmlAdapter"/>
+        </jaxb:globalBindings>
+    </jaxb:bindings>
+</jaxb:bindings>

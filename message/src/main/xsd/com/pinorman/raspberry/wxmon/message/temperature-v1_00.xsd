@@ -1,0 +1,34 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+            xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+            jaxb:extensionBindingPrefixes="xjc"
+            jaxb:version="2.1"
+            xmlns:sub="http://www.pinorman.com/raspberry/wxmon/message/v1_00/xml"
+            targetNamespace="http://www.pinorman.com/raspberry/wxmon/message/v1_00/xml"
+            version="1.00">
+
+    <xsd:simpleType name="temperatureUnit" final="restriction">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Fahrenheit"/>
+            <xsd:enumeration value="Celsius"/>
+            <xsd:enumeration value="Kelvin"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="temperatureReading">
+        <xsd:sequence>
+            <xsd:element name="temperature" type="xsd:double"/>
+            <xsd:element name="unit" type="sub:temperatureUnit" minOccurs="0" default="Fahrenheit"/>
+            <xsd:element name="time" type="xsd:dateTime"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="temperatureReadings">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="value" type="sub:temperatureReading" minOccurs="1" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>
