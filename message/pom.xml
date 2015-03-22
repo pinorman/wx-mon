@@ -13,10 +13,6 @@
 
     <packaging>jar</packaging>
 
-    <properties>
-
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -37,7 +33,7 @@
                     </schemaIncludes>
                     <bindingDirectory>src/main/xsd</bindingDirectory>
                     <bindingIncludes>
-                        <include>**/*.xml</include>
+                        <include>**/bindings.xml</include>
                     </bindingIncludes>
                 </configuration>
             </plugin>
