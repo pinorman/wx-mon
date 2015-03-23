@@ -3,18 +3,18 @@ package com.pinorman.raspberry.wxmon.message;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.List;
+import java.util.ServiceLoader;
 
-public enum RainDataSerializer implements SensorReadingSerializer<RainSensorReading> {
+public enum RainDataSerializer implements RainSensorReadingSerializer {
     instance;
 
-    private static final List<SensorReadingSerializer<RainSensorReading>> SERIALIZERS = Arrays.asList(
-            com.pinorman.raspberry.wxmon.message.v1_00.xml.RainDataSerializer.instance);
+    private final ServiceLoader<RainSensorReadingSerializer> serializers = ServiceLoader.load(
+            RainSensorReadingSerializer.class);
 
     @Override
     public List<RainSensorReading> unmarshal(InputStream input) throws IOException, SerializeException {
-        for (SensorReadingSerializer<RainSensorReading> serializer : SERIALIZERS) {
+        for (SensorReadingSerializer<RainSensorReading> serializer : serializers) {
             try {
                 return serializer.unmarshal(input);
             } catch (SerializeException ignored) {
@@ -26,7 +26,7 @@ public enum RainDataSerializer implements SensorReadingSerializer<RainSensorRead
 
     @Override
     public void marshal(Iterable<? extends RainSensorReading> data, Writer writer) throws SerializeException {
-        for (SensorReadingSerializer<RainSensorReading> serializer : SERIALIZERS) {
+        for (SensorReadingSerializer<RainSensorReading> serializer : serializers) {
             try {
                 serializer.marshal(data, writer);
                 return;

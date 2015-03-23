@@ -3,18 +3,18 @@ package com.pinorman.raspberry.wxmon.message;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.List;
+import java.util.ServiceLoader;
 
-public enum TemperatureDataSerializer implements SensorReadingSerializer<TemperatureSensorReading> {
+public enum TemperatureDataSerializer implements TemperatureSensorReadingSerializer {
     instance;
 
-    private static final List<SensorReadingSerializer<TemperatureSensorReading>> SERIALIZERS = Arrays.asList(
-            com.pinorman.raspberry.wxmon.message.v1_00.xml.TemperatureDataSerializer.instance);
+    private final ServiceLoader<TemperatureSensorReadingSerializer> serializers = ServiceLoader.load(
+            TemperatureSensorReadingSerializer.class);
 
     @Override
     public List<TemperatureSensorReading> unmarshal(InputStream input) throws IOException, SerializeException {
-        for (SensorReadingSerializer<TemperatureSensorReading> serializer : SERIALIZERS) {
+        for (SensorReadingSerializer<TemperatureSensorReading> serializer : serializers) {
             try {
                 return serializer.unmarshal(input);
             } catch (SerializeException ignored) {
@@ -26,7 +26,7 @@ public enum TemperatureDataSerializer implements SensorReadingSerializer<Tempera
 
     @Override
     public void marshal(Iterable<? extends TemperatureSensorReading> data, Writer writer) throws SerializeException {
-        for (SensorReadingSerializer<TemperatureSensorReading> serializer : SERIALIZERS) {
+        for (SensorReadingSerializer<TemperatureSensorReading> serializer : serializers) {
             try {
                 serializer.marshal(data, writer);
                 return;

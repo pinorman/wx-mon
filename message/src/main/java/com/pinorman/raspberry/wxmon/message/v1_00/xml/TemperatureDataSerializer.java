@@ -8,14 +8,13 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import com.pinorman.raspberry.wxmon.message.SensorReadingSerializer;
 import com.pinorman.raspberry.wxmon.message.SerializeException;
 import com.pinorman.raspberry.wxmon.message.TemperatureSensorReading;
+import com.pinorman.raspberry.wxmon.message.TemperatureSensorReadingSerializer;
 
-public enum TemperatureDataSerializer implements SensorReadingSerializer<TemperatureSensorReading> {
-    instance;
+class TemperatureDataSerializer implements TemperatureSensorReadingSerializer {
 
-    private JAXBContext context;
+    private static JAXBContext context;
 
     private JAXBContext getContext() throws SerializeException {
         try {

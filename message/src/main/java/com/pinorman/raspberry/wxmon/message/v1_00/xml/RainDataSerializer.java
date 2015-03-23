@@ -9,13 +9,12 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import com.pinorman.raspberry.wxmon.message.RainSensorReading;
-import com.pinorman.raspberry.wxmon.message.SensorReadingSerializer;
+import com.pinorman.raspberry.wxmon.message.RainSensorReadingSerializer;
 import com.pinorman.raspberry.wxmon.message.SerializeException;
 
-public enum RainDataSerializer implements SensorReadingSerializer<RainSensorReading> {
-    instance;
+class RainDataSerializer implements RainSensorReadingSerializer {
 
-    private JAXBContext context;
+    private static JAXBContext context;
 
     private JAXBContext getContext() throws SerializeException {
         try {
