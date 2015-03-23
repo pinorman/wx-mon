@@ -14,9 +14,9 @@ public enum RainDataSerializer implements SensorReadingSerializer<RainSensorRead
 
     @Override
     public List<RainSensorReading> unmarshal(InputStream input) throws IOException, SerializeException {
-        for (SensorReadingSerializer<RainSensorReading> parser : SERIALIZERS) {
+        for (SensorReadingSerializer<RainSensorReading> serializer : SERIALIZERS) {
             try {
-                return parser.unmarshal(input);
+                return serializer.unmarshal(input);
             } catch (SerializeException ignored) {
             }
         }
@@ -26,9 +26,10 @@ public enum RainDataSerializer implements SensorReadingSerializer<RainSensorRead
 
     @Override
     public void marshal(Iterable<? extends RainSensorReading> data, Writer writer) throws SerializeException {
-        for (SensorReadingSerializer<RainSensorReading> parser : SERIALIZERS) {
+        for (SensorReadingSerializer<RainSensorReading> serializer : SERIALIZERS) {
             try {
-                parser.marshal(data, writer);
+                serializer.marshal(data, writer);
+                return;
             } catch (SerializeException ignored) {
             }
         }

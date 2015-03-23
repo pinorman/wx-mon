@@ -3,7 +3,6 @@ package com.pinorman.raspberry.wxmon.message;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,9 +14,9 @@ public enum TemperatureDataSerializer implements SensorReadingSerializer<Tempera
 
     @Override
     public List<TemperatureSensorReading> unmarshal(InputStream input) throws IOException, SerializeException {
-        for (SensorReadingSerializer<TemperatureSensorReading> parser : SERIALIZERS) {
+        for (SensorReadingSerializer<TemperatureSensorReading> serializer : SERIALIZERS) {
             try {
-                return parser.unmarshal(input);
+                return serializer.unmarshal(input);
             } catch (SerializeException ignored) {
             }
         }
@@ -27,9 +26,10 @@ public enum TemperatureDataSerializer implements SensorReadingSerializer<Tempera
 
     @Override
     public void marshal(Iterable<? extends TemperatureSensorReading> data, Writer writer) throws SerializeException {
-        for (SensorReadingSerializer<TemperatureSensorReading> parser : SERIALIZERS) {
+        for (SensorReadingSerializer<TemperatureSensorReading> serializer : SERIALIZERS) {
             try {
-                parser.marshal(data, writer);
+                serializer.marshal(data, writer);
+                return;
             } catch (SerializeException ignored) {
             }
         }
