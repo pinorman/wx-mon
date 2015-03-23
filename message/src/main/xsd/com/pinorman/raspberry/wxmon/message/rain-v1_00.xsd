@@ -3,7 +3,7 @@
             targetNamespace="http://www.pinorman.com/raspberry/wxmon/message/v1_00/xml"
             version="1.00">
 
-    <xsd:complexType name="raidReading">
+    <xsd:complexType name="rainReading">
         <xsd:sequence>
             <xsd:element name="value" type="xsd:double"/>
             <xsd:element name="time" type="xsd:dateTime"/>
@@ -13,7 +13,7 @@
     <xsd:element name="rainData">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="reading" type="sub:raidReading" maxOccurs="unbounded"/>
+                <xsd:element name="reading" type="sub:rainReading" maxOccurs="unbounded"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
