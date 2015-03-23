@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns1:temperatureReadings xmlns:ns1="http://www.pinorman.com/raspberry/wxmon/message/v1_00/xml">
-    <value>
-        <temperature>32.0</temperature>
-        <unit>Fahrenheit</unit>
+<ns:temperatureData xmlns:ns="http://www.pinorman.com/raspberry/wxmon/message/v1_00/xml">
+    <reading>
+        <value>32.0</value>
         <time>2015-03-17T22:16:00</time>
-    </value>
-    <value>
-        <temperature>32.5</temperature>
-        <unit>Fahrenheit</unit>
+    </reading>
+    <reading>
+        <value>32.5</value>
         <time>2015-03-17T22:17:00</time>
-    </value>
-</ns1:temperatureReadings>
+    </reading>
+</ns:temperatureData>

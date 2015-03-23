@@ -29,16 +29,15 @@ public class TemperatureParser {
     private static final Logger log = LoggerFactory.getLogger(TemperatureParser.class);
 
     public void start() throws JAXBException, IOException, DatatypeConfigurationException {
-        JAXBContext context = JAXBContext.newInstance(TemperatureReadings.class.getPackage().getName());
+        JAXBContext context = JAXBContext.newInstance(TemperatureData.class.getPackage().getName());
 
         Path path = getResource("temperature-sample.xml");
-        TemperatureReadings temperatureReadings = (TemperatureReadings) context.createUnmarshaller()
-                                                                               .unmarshal(Files.newInputStream(path));
+        TemperatureData temperatureReadings = (TemperatureData) context.createUnmarshaller()
+                                                               .unmarshal(Files.newInputStream(path));
 
         log.info("Reading temperature from {}", path);
-        for (TemperatureReading reading : temperatureReadings.getValue()) {
-            log.info("    Temperature was {} {} at {}", reading.getTemperature(), reading.getUnit().value(),
-                     reading.getTime());
+        for (TemperatureReading reading : temperatureReadings.getReadings()) {
+            log.info("    Temperature was {} F at {}", reading.getValue(), reading.getTime());
         }
 
         log.info("Writing data read to a string using the JAXB marshaller");
@@ -49,13 +48,12 @@ public class TemperatureParser {
 
         log.info("Writing data read to a string using the JAXB marshaller");
         StringWriter anotherWriter = new StringWriter();
-        TemperatureReadings anotherSetOfReadings = new TemperatureReadings();
+        TemperatureData anotherSetOfReadings = new TemperatureData();
         for (int i = 0; i < 5; i++) {
             TemperatureReading reading = new TemperatureReading();
-            reading.setTemperature(40 + i);
-            reading.setUnit(TemperatureUnit.FAHRENHEIT);
+            reading.setValue(40 + i);
             reading.setTime(LocalDateTime.of(2015, Month.MARCH, 17, 22, i * 10, 0, 0));
-            anotherSetOfReadings.getValue().add(reading);
+            anotherSetOfReadings.getReadings().add(reading);
         }
         context.createMarshaller().marshal(anotherSetOfReadings, anotherWriter);
         log.info("{}", anotherWriter);

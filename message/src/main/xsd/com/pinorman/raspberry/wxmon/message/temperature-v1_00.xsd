@@ -3,26 +3,17 @@
             targetNamespace="http://www.pinorman.com/raspberry/wxmon/message/v1_00/xml"
             version="1.00">
 
-    <xsd:simpleType name="temperatureUnit" final="restriction">
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="Fahrenheit"/>
-            <xsd:enumeration value="Celsius"/>
-            <xsd:enumeration value="Kelvin"/>
-        </xsd:restriction>
-    </xsd:simpleType>
-
     <xsd:complexType name="temperatureReading">
         <xsd:sequence>
-            <xsd:element name="temperature" type="xsd:double"/>
-            <xsd:element name="unit" type="sub:temperatureUnit" minOccurs="0" default="Fahrenheit"/>
+            <xsd:element name="value" type="xsd:double"/>
             <xsd:element name="time" type="xsd:dateTime"/>
         </xsd:sequence>
     </xsd:complexType>
 
-    <xsd:element name="temperatureReadings">
+    <xsd:element name="temperatureData">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="value" type="sub:temperatureReading" minOccurs="1" maxOccurs="unbounded"/>
+                <xsd:element name="reading" type="sub:temperatureReading" maxOccurs="unbounded"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>

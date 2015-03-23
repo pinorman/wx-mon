@@ -3,24 +3,17 @@
             targetNamespace="http://www.pinorman.com/raspberry/wxmon/message/v1_00/xml"
             version="1.00">
 
-    <xsd:simpleType name="volumeUnit" final="restriction">
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="Litre"/>
-        </xsd:restriction>
-    </xsd:simpleType>
-
-    <xsd:complexType name="rainReading">
+    <xsd:complexType name="raidReading">
         <xsd:sequence>
-            <xsd:element name="rain" type="xsd:double"/>
-            <xsd:element name="unit" type="sub:volumeUnit" minOccurs="0" default="Litre"/>
+            <xsd:element name="value" type="xsd:double"/>
             <xsd:element name="time" type="xsd:dateTime"/>
         </xsd:sequence>
     </xsd:complexType>
 
-    <xsd:element name="rainReadings">
+    <xsd:element name="rainData">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="value" type="sub:rainReading" minOccurs="1" maxOccurs="unbounded"/>
+                <xsd:element name="reading" type="sub:raidReading" maxOccurs="unbounded"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
