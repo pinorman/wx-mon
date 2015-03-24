@@ -38,7 +38,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.3.2</version>
                 <configuration>
-                    <mainClass>com.pinorman.raspberry.wxmon.server.WxRaspiServer</mainClass>
+                    <mainClass>com.pinorman.wxmon.server.WxRaspiServer</mainClass>
                 </configuration>
             </plugin>
         </plugins>
@@ -69,7 +69,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath>true</addClasspath>
-                                    <mainClass>com.pinorman.raspberry.wxmon.server.WxRaspiServer</mainClass>
+                                    <mainClass>com.pinorman.wxmon.server.WxRaspiServer</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>

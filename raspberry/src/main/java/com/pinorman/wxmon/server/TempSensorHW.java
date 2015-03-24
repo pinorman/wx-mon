@@ -1,4 +1,4 @@
-package com.pinorman.raspberry.wxmon.server;
+package com.pinorman.wxmon.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -28,7 +28,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.3.2</version>
                 <configuration>
-                    <mainClass>com.pinorman.raspberry.wxmon.client.WxClient</mainClass>
+                    <mainClass>com.pinorman.wxmon.client.WxClient</mainClass>
                     <arguments>
                         <argument>${raspberry.address}</argument>
                     </arguments>

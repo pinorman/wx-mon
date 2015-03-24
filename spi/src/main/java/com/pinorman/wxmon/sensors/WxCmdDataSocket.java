@@ -1,4 +1,4 @@
-package com.pinorman.raspberry.wxmon.sensors;
+package com.pinorman.wxmon.sensors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,10 +1,16 @@
-package com.pinorman.raspberry.wxmon.server;
+package com.pinorman.wxmon.server;
 
 
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-import com.pinorman.raspberry.wxmon.sensors.*;
+import com.pinorman.wxmon.sensors.RainHistory;
+import com.pinorman.wxmon.sensors.RainHistoryImpl;
+import com.pinorman.wxmon.sensors.ServerCommand;
+import com.pinorman.wxmon.sensors.TempHistory;
+import com.pinorman.wxmon.sensors.TempHistoryImpl;
+import com.pinorman.wxmon.sensors.TempReading;
+import com.pinorman.wxmon.sensors.WxCmdDataSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

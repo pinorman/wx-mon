@@ -1,7 +1,11 @@
-package com.pinorman.raspberry.wxmon.client;
+package com.pinorman.wxmon.client;
 
 
-import com.pinorman.raspberry.wxmon.sensors.*;
+import com.pinorman.wxmon.sensors.RainHistory;
+import com.pinorman.wxmon.sensors.ServerCommand;
+import com.pinorman.wxmon.sensors.TempHistory;
+import com.pinorman.wxmon.sensors.TempReading;
+import com.pinorman.wxmon.sensors.WxCmdDataSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

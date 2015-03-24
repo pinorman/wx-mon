@@ -1,4 +1,4 @@
-package com.pinorman.raspberry.wxmon.server;
+package com.pinorman.wxmon.server;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;

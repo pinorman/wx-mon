@@ -1,4 +1,4 @@
-package com.pinorman.raspberry.wxmon.sensors;
+package com.pinorman.wxmon.sensors;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

@@ -1,4 +1,4 @@
-package com.pinorman.raspberry.wxmon.sensors;
+package com.pinorman.wxmon.sensors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
