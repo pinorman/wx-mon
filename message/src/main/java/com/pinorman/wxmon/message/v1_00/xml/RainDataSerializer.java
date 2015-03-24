@@ -1,4 +1,4 @@
-package com.pinorman.raspberry.wxmon.message.v1_00.xml;
+package com.pinorman.wxmon.message.v1_00.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,11 +8,11 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import com.pinorman.raspberry.wxmon.message.RainSensorReading;
-import com.pinorman.raspberry.wxmon.message.RainSensorReadingSerializer;
-import com.pinorman.raspberry.wxmon.message.SerializeException;
+import com.pinorman.wxmon.message.RainSensorReading;
+import com.pinorman.wxmon.message.RainSensorReadingSerializer;
+import com.pinorman.wxmon.message.SerializeException;
 
-class RainDataSerializer implements RainSensorReadingSerializer {
+public class RainDataSerializer implements RainSensorReadingSerializer {
 
     private static JAXBContext context;
 

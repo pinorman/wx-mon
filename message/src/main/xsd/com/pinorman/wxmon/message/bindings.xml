@@ -6,7 +6,7 @@
         <jaxb:globalBindings>
             <xjc:simple/>
             <xjc:javaType name="java.time.LocalDateTime" xmlType="xsd:dateTime"
-                          adapter="com.pinorman.raspberry.wxmon.message.LocalDateTimeXmlAdapter"/>
+                          adapter="com.pinorman.wxmon.message.LocalDateTimeXmlAdapter"/>
         </jaxb:globalBindings>
     </jaxb:bindings>
 </jaxb:bindings>

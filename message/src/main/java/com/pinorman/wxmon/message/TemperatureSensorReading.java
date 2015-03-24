@@ -1,13 +1,13 @@
-package com.pinorman.raspberry.wxmon.message;
+package com.pinorman.wxmon.message;
 
 import java.time.LocalDateTime;
 
-public class RainSensorReading implements SensorReading {
+public class TemperatureSensorReading implements SensorReading {
 
     private final double value;
     private final LocalDateTime time;
 
-    public RainSensorReading(double value, LocalDateTime time) {
+    public TemperatureSensorReading(double value, LocalDateTime time) {
         this.value = value;
         this.time = time;
     }

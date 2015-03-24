@@ -1,4 +1,4 @@
-package com.pinorman.raspberry.wxmon.message.v1_00.xml;
+package com.pinorman.wxmon.message.v1_00.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -9,7 +9,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pinorman.raspberry.wxmon.message.TemperatureSensorReading;
+import com.pinorman.wxmon.message.TemperatureSensorReading;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ public class TemperatureDataTest {
     @Test
     public void testUnmarshal() throws Exception {
         // @formatter:off
-        String data = "<ns:temperatureData xmlns:ns=\"http://www.pinorman.com/raspberry/wxmon/message/v1_00/xml\">\n"
+        String data = "<ns:temperatureData xmlns:ns=\"http://www.pinorman.com/wxmon/message/v1_00/xml\">\n"
                     + "    <reading>\n"
                     + "        <value>32.0</value>\n"
                     + "        <time>2015-03-17T22:16:00</time>\n"
@@ -52,7 +52,7 @@ public class TemperatureDataTest {
     public void testMarshal() throws Exception {
         // @formatter:off
         String data = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
-                    + "<ns2:temperatureData xmlns:ns2=\"http://www.pinorman.com/raspberry/wxmon/message/v1_00/xml\">"
+                    + "<ns2:temperatureData xmlns:ns2=\"http://www.pinorman.com/wxmon/message/v1_00/xml\">"
                         + "<reading>"
                             + "<value>32.0</value>"
                             + "<time>2015-03-17T22:16</time>"

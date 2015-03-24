@@ -1,4 +1,4 @@
-package com.pinorman.raspberry.wxmon.message;
+package com.pinorman.wxmon.message;
 
 import java.time.LocalDateTime;
 

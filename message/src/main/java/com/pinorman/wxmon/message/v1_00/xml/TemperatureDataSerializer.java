@@ -1,4 +1,4 @@
-package com.pinorman.raspberry.wxmon.message.v1_00.xml;
+package com.pinorman.wxmon.message.v1_00.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,11 +8,11 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import com.pinorman.raspberry.wxmon.message.SerializeException;
-import com.pinorman.raspberry.wxmon.message.TemperatureSensorReading;
-import com.pinorman.raspberry.wxmon.message.TemperatureSensorReadingSerializer;
+import com.pinorman.wxmon.message.SerializeException;
+import com.pinorman.wxmon.message.TemperatureSensorReading;
+import com.pinorman.wxmon.message.TemperatureSensorReadingSerializer;
 
-class TemperatureDataSerializer implements TemperatureSensorReadingSerializer {
+public class TemperatureDataSerializer implements TemperatureSensorReadingSerializer {
 
     private static JAXBContext context;
 
