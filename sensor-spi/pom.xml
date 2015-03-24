@@ -8,8 +8,8 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>spi</artifactId>
-    <name>Weather Monitor SPI</name>
+    <artifactId>sensor-spi</artifactId>
+    <name>Weather Monitor - Sensor SPI</name>
 
     <packaging>jar</packaging>
 </project>

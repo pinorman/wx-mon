@@ -12,7 +12,7 @@
     <modules>
         <module>client</module>
         <module>raspberry</module>
-        <module>spi</module>
+        <module>sensor-spi</module>
     </modules>
 
     <properties>

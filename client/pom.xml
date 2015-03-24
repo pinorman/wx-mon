@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>com.pinorman.wx-mon</groupId>
-            <artifactId>spi</artifactId>
+            <artifactId>sensor-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
