@@ -11,6 +11,6 @@
         <appender-ref ref="STDOUT" />
     </root>
 
-    <logger name="com.pinorman.raspberry.wxmon" level="trace" />
+    <logger name="com.pinorman.wxmon" level="trace" />
 
 </configuration>

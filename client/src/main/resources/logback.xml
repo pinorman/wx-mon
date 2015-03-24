@@ -11,5 +11,5 @@
         <appender-ref ref="STDOUT" />
     </root>
 
-    <logger name="com.pinorman.wxmon.client.WxClient" level="trace" />
+    <logger name="com.pinorman.client.WxClient" level="trace" />
 </configuration>
