@@ -2,16 +2,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.pinorman.raspberry</groupId>
-    <artifactId>wx-mon-parent</artifactId>
+    <groupId>com.pinorman.wx-mon</groupId>
+    <artifactId>parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <name>Weather Monitor Parent</name>
 
     <packaging>pom</packaging>
 
     <modules>
-        <module>wx-mon-api</module>
-        <module>wx-mon-raspberry</module>
-        <module>wx-mon-client</module>
+        <module>client</module>
+        <module>raspberry</module>
+        <module>sensor-spi</module>
     </modules>
 
     <properties>
