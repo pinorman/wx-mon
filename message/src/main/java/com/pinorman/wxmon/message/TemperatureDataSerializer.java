@@ -9,8 +9,11 @@ import java.util.ServiceLoader;
 public enum TemperatureDataSerializer implements TemperatureSensorReadingSerializer {
     instance;
 
-    private final ServiceLoader<TemperatureSensorReadingSerializer> serializers = ServiceLoader.load(
-            TemperatureSensorReadingSerializer.class);
+    private final ServiceLoader<TemperatureSensorReadingSerializer> serializers;
+
+    TemperatureDataSerializer() {
+        this.serializers = ServiceLoader.load(TemperatureSensorReadingSerializer.class);
+    }
 
     @Override
     public List<TemperatureSensorReading> unmarshal(InputStream input) throws IOException, SerializeException {

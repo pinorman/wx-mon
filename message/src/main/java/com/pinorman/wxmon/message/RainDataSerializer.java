@@ -9,8 +9,11 @@ import java.util.ServiceLoader;
 public enum RainDataSerializer implements RainSensorReadingSerializer {
     instance;
 
-    private final ServiceLoader<RainSensorReadingSerializer> serializers = ServiceLoader.load(
-            RainSensorReadingSerializer.class);
+    private final ServiceLoader<RainSensorReadingSerializer> serializers;
+
+    RainDataSerializer() {
+        this.serializers = ServiceLoader.load(RainSensorReadingSerializer.class);
+    }
 
     @Override
     public List<RainSensorReading> unmarshal(InputStream input) throws IOException, SerializeException {
