@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>message</artifactId>
-    <name>Weather Monitor Messages</name>
+    <name>Weather Monitor - Messages</name>
 
     <packaging>jar</packaging>
 
