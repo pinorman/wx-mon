@@ -12,7 +12,7 @@ import com.pinorman.wxmon.message.RainSensorReading;
 import com.pinorman.wxmon.message.RainSensorReadingSerializer;
 import com.pinorman.wxmon.message.SerializeException;
 
-public class RainDataSerializer implements RainSensorReadingSerializer {
+public class V1_00_RainDataSerializer implements RainSensorReadingSerializer {
 
     private static JAXBContext context;
 

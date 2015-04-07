@@ -31,7 +31,7 @@ public class TemperatureDataTest {
         // @formatter:on
 
         InputStream stream = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
-        List<TemperatureSensorReading> readings = new TemperatureDataSerializer().unmarshal(stream);
+        List<TemperatureSensorReading> readings = new V1_00_TemperatureDataSerializer().unmarshal(stream);
 
         Assert.assertEquals(2, readings.size());
 
@@ -69,7 +69,7 @@ public class TemperatureDataTest {
         readings.add(new TemperatureSensorReading(32.5, LocalDateTime.of(2015, Month.MARCH, 17, 22, 17)));
 
         StringWriter stringWriter = new StringWriter();
-        new TemperatureDataSerializer().marshal(readings, stringWriter);
+        new V1_00_TemperatureDataSerializer().marshal(readings, stringWriter);
 
         Assert.assertEquals(data, stringWriter.toString());
     }

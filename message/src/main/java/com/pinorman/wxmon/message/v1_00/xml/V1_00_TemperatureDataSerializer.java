@@ -12,7 +12,7 @@ import com.pinorman.wxmon.message.SerializeException;
 import com.pinorman.wxmon.message.TemperatureSensorReading;
 import com.pinorman.wxmon.message.TemperatureSensorReadingSerializer;
 
-public class TemperatureDataSerializer implements TemperatureSensorReadingSerializer {
+public class V1_00_TemperatureDataSerializer implements TemperatureSensorReadingSerializer {
 
     private static JAXBContext context;
 
