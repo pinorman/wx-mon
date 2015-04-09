@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns:temperatureData xmlns:ns="http://www.pinorman.com/wxmon/message/v1_00/xml">
+    <reading>
+        <value>32.0</value>
+        <time>2015-03-17T22:16:00</time>
+    </reading>
+    <reading>
+        <value>32.5</value>
+        <time>2015-03-17T22:17:00</time>
+    </reading>
+</ns:temperatureData>

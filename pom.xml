@@ -11,6 +11,7 @@
 
     <modules>
         <module>client</module>
+        <module>message</module>
         <module>raspberry</module>
         <module>sensor-spi</module>
     </modules>

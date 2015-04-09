@@ -1,0 +1,21 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:sub="http://www.pinorman.com/wxmon/message/v1_00/xml"
+            targetNamespace="http://www.pinorman.com/wxmon/message/v1_00/xml"
+            version="1.00">
+
+    <xsd:complexType name="temperatureReading">
+        <xsd:sequence>
+            <xsd:element name="value" type="xsd:double"/>
+            <xsd:element name="time" type="xsd:dateTime"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="temperatureData">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="reading" type="sub:temperatureReading" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>
