@@ -1,5 +1,6 @@
 package com.pinorman.wxmon.server;
 
+import com.pinorman.wxmon.sensors.TempReading;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
+import java.time.LocalDateTime;
 
 
 /**
@@ -53,6 +55,10 @@ public class TempSensorHW {
             log.info(ex.getMessage());
             tProbeFound = false;
         }
+    }
+
+    public TempReading read() {
+        return new TempReading(readTemp(), LocalDateTime.now());
     }
 
     public double readTemp() {
