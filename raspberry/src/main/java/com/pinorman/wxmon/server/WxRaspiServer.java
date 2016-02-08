@@ -4,21 +4,11 @@ package com.pinorman.wxmon.server;
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-import com.pinorman.wxmon.sensors.RainHistory;
-import com.pinorman.wxmon.sensors.RainHistoryImpl;
-import com.pinorman.wxmon.sensors.ServerCommand;
-import com.pinorman.wxmon.sensors.TempHistory;
-import com.pinorman.wxmon.sensors.TempHistoryImpl;
-import com.pinorman.wxmon.sensors.TempReading;
-import com.pinorman.wxmon.sensors.WxCmdDataSocket;
+import com.pinorman.wxmon.sensors.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.text.DecimalFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
+import java.io.Serializable;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,24 +18,28 @@ import java.util.TimerTask;
 public class WxRaspiServer {
 
     private static final Logger log = LoggerFactory.getLogger(WxRaspiServer.class);
-    private final static String TEMP_PROBE_ID = "28-00000514891a";
+    private final static String TEMP_SENSOR_OUTSIDE_ID = "28-00000514891a";
+    private final static String TEMP_SENSOR_INSIDE_ID = "28-031554406eff";
     private final static int TEMP_SCAN_INTERVAL = 1000 * 60 * 15;       // 15 minutes
     private final static int WX_PORT = 8080;
     private final GpioController gpio;
-    private TempSensorHW tempProbe;
-    private TempHistory tSensor;
+
+    private TempSensorHW tempOutsideProbe;
+    private TempSensorHW tempInsideProbe;
     private RainHistory rSensor;
-
-
-    private String tFile = "temperatureDB.txt";
+    private static String tOutsideFile = "temperatureOutsideDB.txt";
+    private static String tInsideFile = "temperatureInsideDB.txt";
+    private TempHistory tOutsideSensor = new TempHistoryImpl(tOutsideFile);
+    private TempHistory tInsideSensor = new TempHistoryImpl(tInsideFile);
 
     public WxRaspiServer() {
-        tSensor = new TempHistoryImpl();
         /*
-        Process the Temperature file and add to history
+        Process the Temperature file(s) and add to history(s)
          */
-        readTempDataBase();
-        tempProbe = new TempSensorHW(TEMP_PROBE_ID);
+        // Hardware temperature probes defined
+        tempInsideProbe = new TempSensorHW(TEMP_SENSOR_INSIDE_ID);
+        tempOutsideProbe = new TempSensorHW(TEMP_SENSOR_OUTSIDE_ID);
+        // temperature history created
 
         rSensor = new RainHistoryImpl();
 // at some point we will read in raindb as well
@@ -87,7 +81,7 @@ public class WxRaspiServer {
                 log.info("cmd is {}", cmd.getCommand());
                 if (cmd.getCommand() == ServerCommand.CmdType.TEMPERATURE) {
                     log.info("Send temp data back");
-                    wxSocket.writeData(tSensor);
+                    wxSocket.writeData(tOutsideSensor);
                 }
                 if (cmd.getCommand() == ServerCommand.CmdType.RAIN) {
                     log.info("Send Rain Data back");
@@ -100,26 +94,12 @@ public class WxRaspiServer {
     }
 
     private void initSensors() {
-        DecimalFormat decForm = new DecimalFormat("##0.00");
-        DateTimeFormatter dateForm = DateTimeFormatter.ofPattern("yyyy-MM-d H:m:ss.nnnnnnnnn");
-
         TimerTask TempScheduler = new TimerTask() {
             @Override
             public void run() {
-                //       double lastTemp = tempProbe.getCurrentTemp();
-                double currentTemp = tempProbe.readTemp();
-                int retryCount = 0;
 
-                LocalDateTime t = LocalDateTime.now();
-                tSensor.add(new TempReading(currentTemp, t));
-                StringBuilder sb = new StringBuilder();
-                // build string with temp and date and a <LF>
-                sb.append(decForm.format(currentTemp)).append(" ").append(dateForm.format(t)).append("\n");
-                try (BufferedWriter tOut = new BufferedWriter(new FileWriter(tFile, true))) {
-                    tOut.write(sb.toString());
-                } catch (IOException e) {
-                    log.warn("Error on Temperature file", e);
-                }
+                tOutsideSensor.add(tempOutsideProbe.read());
+                tInsideSensor.add(tempInsideProbe.read());
             }
         };
         Timer timer = new Timer(true);
@@ -127,18 +107,5 @@ public class WxRaspiServer {
         log.info("Raspi hardware has been started");
     }
 
-    private void readTempDataBase() {
-        double temp;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(" yyyy-MM-d H:m:ss.nnnnnnnnn");       // notice the " " in front of yyyy
-        log.info("Read in any existing temperature data");
-        try (Scanner s = new Scanner(new File(tFile))) {
-            while (s.hasNext()) {
-                temp = s.nextDouble();          // read in temp
-                tSensor.add(new TempReading(temp, LocalDateTime.parse(s.nextLine(), formatter))); // read in date and add in the records we parse from the file
-            }
-        } catch (IOException e) {
-            log.warn("Error reading Temperature file", e);
-        }
-    }
 
 }
