@@ -14,7 +14,7 @@ public class TempHistoryImplTest {
 
     @Test
     public void testAdd() throws Exception {
-        TempHistoryImpl que = new TempHistoryImpl();
+        TempHistoryImpl que = new TempHistoryImpl("test.txt");
 
 
     }
@@ -35,7 +35,7 @@ public class TempHistoryImplTest {
 
     @Test
     public void testGetCurrentTemp() throws Exception {
-        TempHistoryImpl que = new TempHistoryImpl();
+        TempHistoryImpl que = new TempHistoryImpl("c:/test.txt");
 
         Assert.assertEquals("testGetCurrentTemp failed with empty que", que.getCurrentTemp(), -40, 0.0);
         TempReading t1 = new TempReading(20, LocalDateTime.now());
