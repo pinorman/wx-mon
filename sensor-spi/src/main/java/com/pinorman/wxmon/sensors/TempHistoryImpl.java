@@ -58,10 +58,11 @@ public class TempHistoryImpl implements TempHistory {
 
     public void add(TempReading temp) {
         qTemp.add(temp);
+
         if(fileWrite) {
             StringBuilder sb = new StringBuilder();
             // build string with temp and date;
-            sb.append(decForm.format(temp)).append(dateParser.format(LocalDateTime.now())).append("\n");
+            sb.append(decForm.format(temp.getTemp())).append(dateParser.format(temp.getTempTime())).append("\n");
             // write it to the file
             try (BufferedWriter tOut = new BufferedWriter(new FileWriter(this.file, true))) {
                 tOut.write(sb.toString());
