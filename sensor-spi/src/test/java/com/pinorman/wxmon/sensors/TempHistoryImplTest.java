@@ -52,7 +52,7 @@ public class TempHistoryImplTest {
         TempHistoryImpl que = new TempHistoryImpl();
 
         Assert.assertEquals("testGetMaxTemp: Max temperature is incorrect with que empty", -40,
-                que.getMaxTemp(LocalDateTime.of(2000, 1, 1, 0, 0, 0), LocalDateTime.of(2000, 1, 2, 0, 1, 0)), 0.0);
+                que.getMaxTemp(LocalDateTime.of(2000, 1, 1, 0, 0, 0), LocalDateTime.of(2000, 1, 2, 0, 1, 0)).getTemp(), 0.0);
 
         LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0, 0);
         List<LocalDateTime> times = new ArrayList<>();
@@ -85,12 +85,18 @@ public class TempHistoryImplTest {
         Now set up for testing
         test against each edge, the middle etc.
          */
-        Assert.assertEquals("testGetMaxTemp: Max temperature is incorrect for whole que", 200, que.getMaxTemp(times.get(0), times.get(9)), 0.0);
-        Assert.assertEquals("testGetMaxTemp: Max temperature is incorrect for start boundary", 170, que.getMaxTemp(times.get(0), times.get(4)), 0.0);
-        Assert.assertEquals("testGetMaxTemp: Max temperature is incorrect for end boundary", 200, que.getMaxTemp(times.get(6), times.get(9)), 0.0);
-        Assert.assertEquals("testGetMaxTemp: Max temperature is incorrect for middle of que", 160, que.getMaxTemp(times.get(1), times.get(7)), 0.0);
-        Assert.assertEquals("testGetMaxTemp: Max temperature is incorrect for middle of que", 190, que.getMaxTemp(times.get(1), times.get(8)), 0.0);
-        Assert.assertEquals("testGetMaxTemp: Max temperature is incorrect for times equal", 190, que.getMaxTemp(times.get(8), times.get(8)), 0.0);
+        Assert.assertEquals("testGetMaxTemp: Max temperature is incorrect for whole que", 200,
+                que.getMaxTemp(times.get(0), times.get(9)).getTemp(), 0.0);
+        Assert.assertEquals("testGetMaxTemp: Max temperature is incorrect for start boundary", 170,
+                que.getMaxTemp(times.get(0), times.get(4)).getTemp(), 0.0);
+        Assert.assertEquals("testGetMaxTemp: Max temperature is incorrect for end boundary", 200,
+                que.getMaxTemp(times.get(6), times.get(9)).getTemp(), 0.0);
+        Assert.assertEquals("testGetMaxTemp: Max temperature is incorrect for middle of que", 160,
+                que.getMaxTemp(times.get(1), times.get(7)).getTemp(), 0.0);
+        Assert.assertEquals("testGetMaxTemp: Max temperature is incorrect for middle of que", 190,
+                que.getMaxTemp(times.get(1), times.get(8)).getTemp(), 0.0);
+        Assert.assertEquals("testGetMaxTemp: Max temperature is incorrect for times equal", 190,
+                que.getMaxTemp(times.get(8), times.get(8)).getTemp(), 0.0);
 
     }
 
@@ -99,7 +105,7 @@ public class TempHistoryImplTest {
         TempHistoryImpl que = new TempHistoryImpl();
 
         Assert.assertEquals("testGetMinTesmp: Max temperature is incorrect with que empty", 120,
-                que.getMinTemp(LocalDateTime.of(2000, 1, 1, 0, 0, 0), LocalDateTime.of(2000, 1, 2, 0, 1, 0)), 0.0);
+                que.getMinTemp(LocalDateTime.of(2000, 1, 1, 0, 0, 0), LocalDateTime.of(2000, 1, 2, 0, 1, 0)).getTemp(), 0.0);
 
         LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0, 0);
         List<LocalDateTime> times = new ArrayList<>();
@@ -132,11 +138,17 @@ public class TempHistoryImplTest {
         Now we are set up for testing
         test against each edge, the middle etc.
          */
-        Assert.assertEquals("testGetMinTesmp: Max temperature is incorrect for whole que", -30, que.getMinTemp(times.get(0), times.get(9)), 0.0);
-        Assert.assertEquals("testGetMinTesmp: Max temperature is incorrect for start boundary", -15, que.getMinTemp(times.get(0), times.get(4)), 0.0);
-        Assert.assertEquals("testGetMinTesmp: Max temperature is incorrect for end boundary", -30, que.getMinTemp(times.get(6), times.get(9)), 0.0);
-        Assert.assertEquals("testGetMinTesmp: Max temperature is incorrect for middle of que", -15, que.getMinTemp(times.get(1), times.get(7)), 0.0);
-        Assert.assertEquals("testGetMinTesmp: Max temperature is incorrect for middle of que", -25, que.getMinTemp(times.get(1), times.get(8)), 0.0);
-        Assert.assertEquals("testGetMinTesmp: Max temperature is incorrect for times equal", -25, que.getMinTemp(times.get(8), times.get(8)), 0.0);
+        Assert.assertEquals("testGetMinTemp: Max temperature is incorrect for whole que", -30,
+                que.getMinTemp(times.get(0), times.get(9)).getTemp(), 0.0);
+        Assert.assertEquals("testGetMinTemp: Max temperature is incorrect for start boundary", -15,
+                que.getMinTemp(times.get(0), times.get(4)).getTemp(), 0.0);
+        Assert.assertEquals("testGetMinTemp: Max temperature is incorrect for end boundary", -30,
+                que.getMinTemp(times.get(6), times.get(9)).getTemp(), 0.0);
+        Assert.assertEquals("testGetMinTemp: Max temperature is incorrect for middle of que", -15,
+                que.getMinTemp(times.get(1), times.get(7)).getTemp(), 0.0);
+        Assert.assertEquals("testGetMinTemp: Max temperature is incorrect for middle of que", -25,
+                que.getMinTemp(times.get(1), times.get(8)).getTemp(), 0.0);
+        Assert.assertEquals("testGetMinTemp: Max temperature is incorrect for times equal", -25,
+                que.getMinTemp(times.get(8), times.get(8)).getTemp(), 0.0);
     }
 }
