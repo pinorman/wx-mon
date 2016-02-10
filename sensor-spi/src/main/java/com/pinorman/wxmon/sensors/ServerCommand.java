@@ -13,6 +13,10 @@ public class ServerCommand implements Serializable {
     public enum DateRange { LASTHOUR, LASTDAY, LASTWEEK, LASTMONTH, DATERANGE }
 
     private CmdType command = CmdType.TEMPERATURE;
+
+    //* below describes the data beyond its type (e.g., temperature's ID could be -> "inside" or "outside"
+    private String sensorId;
+
     private DateRange quickDateEnum = DateRange.LASTHOUR;
     private LocalDateTime begDate, endDate;
 
@@ -26,6 +30,14 @@ public class ServerCommand implements Serializable {
 
     public void setCommand(CmdType command) {
         this.command = command;
+    }
+
+    public String getSensorId() {
+        return sensorId;
+    }
+
+    public void SetSensorId(String commandType) {
+        this.sensorId = commandType;
     }
 
     public DateRange getQuickDateEnum() {
