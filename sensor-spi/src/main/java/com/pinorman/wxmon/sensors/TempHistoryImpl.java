@@ -15,7 +15,6 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 
-
 /**
  * Created by Paul on 3/29/2014.
  */
@@ -25,31 +24,35 @@ public class TempHistoryImpl implements TempHistory {
     public static final int MIN_TEMP = -40;
     public static final int MAX_TEMP = 120;
 
-   private static final Logger log = LoggerFactory.getLogger(TempHistoryImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(TempHistoryImpl.class);
 
     private static DecimalFormat decForm = new DecimalFormat("##0.00");
     private static DateTimeFormatter dateParser = DateTimeFormatter.ofPattern(" yyyy-MM-d H:m:ss.nnnnnnnnn");       // notice the " " in front of yyyy
-
+    private static String DATE_NOT_Found = "1900-1-1";
 
     private Deque<TempReading> qTemp;
-    private String file;
+    private String fileName;
     private boolean fileWrite;
 
     public TempHistoryImpl(String dataFile) {
         qTemp = new ConcurrentLinkedDeque<>();
         fileWrite = true;
         double temp;
-        file = dataFile;
-       log.info("Read in any existing temperature data for {} ", dataFile);
-        try (Scanner s = new Scanner(new File(dataFile))) {
-            while (s.hasNext()) {
-                temp = s.nextDouble();      // read in temp from line in file
-                qTemp.add(new TempReading(temp, LocalDateTime.parse(s.nextLine(), dateParser))); // read in date and add in the records we parse from the file
+        fileName = dataFile;
+        log.info("Read in any existing temperature data for {} ", dataFile);
+        File file = new File(dataFile);
+        if (file.isFile()) {                            // if the file is there, read from it
+            try (Scanner s = new Scanner(file)) {
+                while (s.hasNext()) {
+                    temp = s.nextDouble();      // read in temp from line in fileName
+                    qTemp.add(new TempReading(temp, LocalDateTime.parse(s.nextLine(), dateParser))); // read in date and add in the records we parse from the fileName
+                }
+            } catch (IOException e) {
+                log.warn("Error reading Temperature fileName ", e);
             }
-        } catch (IOException e) {
-           log.warn("Error reading Temperature file ", e);
         }
     }
+
     public TempHistoryImpl() {
         qTemp = new ConcurrentLinkedDeque<>();
         fileWrite = false;
@@ -59,15 +62,15 @@ public class TempHistoryImpl implements TempHistory {
     public void add(TempReading temp) {
         qTemp.add(temp);
 
-        if(fileWrite) {
+        if (fileWrite) {
             StringBuilder sb = new StringBuilder();
             // build string with temp and date;
             sb.append(decForm.format(temp.getTemp())).append(dateParser.format(temp.getTempTime())).append("\n");
             // write it to the file
-            try (BufferedWriter tOut = new BufferedWriter(new FileWriter(this.file, true))) {
+            try (BufferedWriter tOut = new BufferedWriter(new FileWriter(this.fileName, true))) {
                 tOut.write(sb.toString());
             } catch (IOException e) {
-                log.warn("Error on Outside Temperature file", e);
+                log.warn("Error on Outside Temperature fileName", e);
             }
         }
     }
@@ -93,14 +96,15 @@ public class TempHistoryImpl implements TempHistory {
       Returns the maxium temperature found between the two dates give.
       If the begTime is before the first date on the que, the first temp on the que will be used.
       if the endTime is after the last date on the que then the last temp will be used.
-      returns MIN_TEMP if
+      returns MIN_TEMP (within TempReading) if
            endTime is before the first date in the que or
            begTim is after the last date in the que
      */
-    public double getMaxTemp(LocalDateTime userBeginDate, LocalDateTime userEndDate) {
+    public TempReading getMaxTemp(LocalDateTime userBeginDate, LocalDateTime userEndDate) {
 
         double tMax = MIN_TEMP;
-        if (this.queEmpty()) return (tMax);
+        TempReading maxTemp = new TempReading(MIN_TEMP);
+        if (this.queEmpty()) return maxTemp;
 
         LocalDateTime qBeginDate, qEndDate;
         qBeginDate = qTemp.getFirst().getTempTime();
@@ -108,7 +112,7 @@ public class TempHistoryImpl implements TempHistory {
 
         // Test some end conditions
         if (userEndDate.isBefore(qBeginDate) || userBeginDate.isAfter(qEndDate)) {
-            return (tMax);
+            return maxTemp;
         }
         TempReading tArray[] = this.toArray();
         int len = this.queSize();
@@ -119,18 +123,21 @@ public class TempHistoryImpl implements TempHistory {
                     (tArrayValue.isBefore(userEndDate) || tArrayValue.equals(userEndDate))) {               // the test or "equals" is a bit overkill, but it made testing easier
                 if (tMax < tArray[i].getTemp()) {
                     tMax = tArray[i].getTemp();
+                    maxTemp = tArray[i];
                 }
 
             }
         }
-        return (tMax);
+        return maxTemp;
     }
 
 
-    public double getMinTemp(LocalDateTime userBeginDate, LocalDateTime userEndDate) {
+    public TempReading getMinTemp(LocalDateTime userBeginDate, LocalDateTime userEndDate) {
 
         double tMin = MAX_TEMP;
-        if (this.queEmpty()) return (tMin);
+        TempReading minTemp = new TempReading(MAX_TEMP);
+
+        if (this.queEmpty()) return minTemp;
 
         LocalDateTime qBeginDate, qEndDate;
         qBeginDate = qTemp.getFirst().getTempTime();
@@ -138,7 +145,7 @@ public class TempHistoryImpl implements TempHistory {
 
         // Test some end conditions
         if (userEndDate.isBefore(qBeginDate) || userBeginDate.isAfter(qEndDate)) {
-            return (tMin);
+            return minTemp;
         }
         TempReading tArray[] = this.toArray();
         int len = this.queSize();
@@ -149,11 +156,13 @@ public class TempHistoryImpl implements TempHistory {
                     (tArrayValue.isBefore(userEndDate) || tArrayValue.equals(userEndDate))) {               // the test or "equals" is a bit overkill, but it made testing easier
                 if (tMin > tArray[i].getTemp()) {
                     tMin = tArray[i].getTemp();
+                    minTemp = tArray[i];
                 }
 
             }
         }
-        return (tMin);
+        return minTemp;
     }
+
 }
 
