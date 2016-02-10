@@ -33,16 +33,11 @@ public class WxRaspiServer {
     private TempHistory tInsideSensor = new TempHistoryImpl(tInsideFile);
 
     public WxRaspiServer() {
-        /*
-        Process the Temperature file(s) and add to history(s)
-         */
         // Hardware temperature probes defined
         tempInsideProbe = new TempSensorHW(TEMP_SENSOR_INSIDE_ID);
         tempOutsideProbe = new TempSensorHW(TEMP_SENSOR_OUTSIDE_ID);
-        // temperature history created
 
         rSensor = new RainHistoryImpl();
-// at some point we will read in raindb as well
 
         initSensors();
 
@@ -69,19 +64,20 @@ public class WxRaspiServer {
 
     public void startServer() {
 
-
         ServerCommand cmd = null;
         WxCmdDataSocket<Serializable> wxSocket = new WxCmdDataSocket<>(WX_PORT);
         for (; ; ) {
             wxSocket.accept();        // wait on caller -
 
             log.info("waiting for command from socket");
-            while ( (cmd = (ServerCommand)wxSocket.readData()) != null ) {      // Process data while we are still connected
+            while ((cmd = (ServerCommand) wxSocket.readData()) != null) {      // Process data while we are still connected
 
                 log.info("cmd is {}", cmd.getCommand());
                 if (cmd.getCommand() == ServerCommand.CmdType.TEMPERATURE) {
-                    log.info("Send temp data back");
-                    wxSocket.writeData(tOutsideSensor);
+                    String tempLoc = cmd.getSensorId();
+                    log.info("Send temp data back from the {} sensor", tempLoc);
+                    if (tempLoc.equals("outside")) wxSocket.writeData(tOutsideSensor);
+                    if (tempLoc.equals("inside")) wxSocket.writeData(tInsideSensor);
                 }
                 if (cmd.getCommand() == ServerCommand.CmdType.RAIN) {
                     log.info("Send Rain Data back");
@@ -97,7 +93,6 @@ public class WxRaspiServer {
         TimerTask TempScheduler = new TimerTask() {
             @Override
             public void run() {
-
                 tOutsideSensor.add(tempOutsideProbe.read());
                 tInsideSensor.add(tempInsideProbe.read());
             }
