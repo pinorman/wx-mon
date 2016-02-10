@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 public interface TempHistory extends Serializable {
     double getCurrentTemp();
     void add( TempReading t );
-    double getMaxTemp(LocalDateTime beg, LocalDateTime end );
-    double getMinTemp(LocalDateTime beg, LocalDateTime end );
+    TempReading getMaxTemp(LocalDateTime beg, LocalDateTime end );
+    TempReading getMinTemp(LocalDateTime beg, LocalDateTime end );
     TempReading[] toArray();
     int queSize();
 
