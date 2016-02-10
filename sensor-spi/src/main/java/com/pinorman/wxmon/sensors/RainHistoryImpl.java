@@ -1,9 +1,18 @@
 package com.pinorman.wxmon.sensors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 
@@ -14,6 +23,8 @@ public class RainHistoryImpl implements RainHistory {
 
     private final double RAIN_STEP = 0.01; // 1/100 of an inch rain sensor
     private final int RAIN_GAP = 2; // is the gap in hours in the que (between dates)
+    private static final Logger log = LoggerFactory.getLogger(TempHistoryImpl.class);
+    private static DateTimeFormatter dateParser = DateTimeFormatter.ofPattern(" yyyy-MM-d H:m:ss.nnnnnnnnn");       // notice the " " in front of yyyy
 
     /*
     * tRain catcher
@@ -23,7 +34,8 @@ public class RainHistoryImpl implements RainHistory {
     private LocalDateTime lastTime;     // Used when we traverse the que
     private LocalDateTime firstTime;    // used when we traverse the que
     private int accumulatedRain = 0;    // dito
-
+    private boolean fileWrite;
+    private String fileName;
 
     /*
     * Constructor -
@@ -32,6 +44,24 @@ public class RainHistoryImpl implements RainHistory {
     */
     public RainHistoryImpl() {
         qRain = new ConcurrentLinkedDeque<>();
+        fileWrite = false;
+    }
+
+    public RainHistoryImpl(String dataFile) {
+        qRain = new ConcurrentLinkedDeque<>();
+        fileWrite = true;
+        fileName = dataFile;
+        log.info("Read in any existing Rain data for {} ", dataFile);
+        File file = new File(dataFile);
+        if (file.isFile()) {                            // if the file is there, read from it
+            try (Scanner s = new Scanner(file)) {
+                while (s.hasNext()) {
+                    qRain.add(LocalDateTime.parse(s.nextLine(), dateParser)); // read in date and add in the records we parse from the fileName
+                }
+            } catch (IOException e) {
+                log.warn("Error reading Rain fileName ", e);
+            }
+        }
     }
 
     /*
@@ -43,6 +73,17 @@ public class RainHistoryImpl implements RainHistory {
 
     public void incrementRain(LocalDateTime t) {
         qRain.add(t);
+        if (fileWrite) {
+            StringBuilder sb = new StringBuilder();
+            // build string with temp and date;
+            sb.append(dateParser.format(t)).append("\n");
+            // write it to the file
+            try (BufferedWriter tOut = new BufferedWriter(new FileWriter(this.fileName, true))) {
+                tOut.write(sb.toString());
+            } catch (IOException e) {
+                log.warn("Error on Outside Rain fileName", e);
+            }
+        }
     }
 
     /*

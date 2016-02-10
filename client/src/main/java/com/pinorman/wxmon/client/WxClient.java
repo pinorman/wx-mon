@@ -74,6 +74,7 @@ public class WxClient {
                 tMin.getTemp(), dateTimeForm.format(tMin.getTempTime()));
         log.info("The high temp for the past week: {} on day {}",
                 tMax.getTemp(), dateTimeForm.format(tMax.getTempTime()));
+        log.info("Temp now outside: {} and inside {}", tempOutside.getCurrentTemp(), tempInside.getCurrentTemp());
 //        TempReading tArray[] = tempInside.toArray();
 
 
