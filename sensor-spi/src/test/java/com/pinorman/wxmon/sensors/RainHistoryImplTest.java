@@ -3,6 +3,7 @@ package com.pinorman.wxmon.sensors;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -12,21 +13,31 @@ public class RainHistoryImplTest {
 
     @Test
     public void testIncrementRain() throws Exception {
-        RainHistoryImpl r = new RainHistoryImpl();
+        String fileName = "testRain.txt";
+        File file = new File(fileName);
+        if (file.isFile()) file.delete();        // in case is was around from before
+        RainHistoryImpl r = new RainHistoryImpl(fileName);
         r.incrementRain();
         r.incrementRain();
         Assert.assertEquals("IncrementRain: incorrect rain amount", 2 * .01, r.getRainTotal(), .001); // .01
+        /* now instantiate another rain
+         We should see the same amount from the file created above
+          */
+        RainHistoryImpl newR = new RainHistoryImpl(fileName);
+        if (file.isFile()) file.delete();        // get rid of it before the assert
+        Assert.assertEquals("IncrementRain: incorrect rain amount from file", 2 * .01, newR.getRainTotal(), .001); // .01
+
     }
 
     @Test
     public void testIncrementRainWithTime() throws Exception {
         RainHistoryImpl r = new RainHistoryImpl();
-        LocalDateTime baseTime = LocalDateTime.of(2000, 1, 1, 0, 0, 0 );
+        LocalDateTime baseTime = LocalDateTime.of(2000, 1, 1, 0, 0, 0);
         r.incrementRain(baseTime);
         r.incrementRain(baseTime.plusSeconds(1));
         Assert.assertEquals("IncrementRainWithTime failed on First increment", 0, r.getWhenStartedRaining().getSecond());
         Assert.assertEquals("IncrementRainWithTime Failed on following increment", 1, r.getLastTimeSawRain().getSecond());
-   }
+    }
 
     @Test
     public void testGetRainPerHour() throws Exception {
@@ -45,7 +56,7 @@ public class RainHistoryImplTest {
         }
         // accumRain over 10 min  = accumRain/10 min
         // 600/10 =
-        Assert.assertEquals("Rain per hour incorrect ",  (accumRain * .01) /(10*60)*60,
+        Assert.assertEquals("Rain per hour incorrect ", (accumRain * .01) / (10 * 60) * 60,
                 r.getRainPerHour(ChronoUnit.MINUTES), 0.01);
     }
 
@@ -56,8 +67,9 @@ public class RainHistoryImplTest {
         r.incrementRain();
         Assert.assertEquals("GetRainTotal amount", 2 * .01, r.getRainTotal(), .001); //
     }
+
     @Test
-    public void hoursBeenRaining()throws Exception {
+    public void hoursBeenRaining() throws Exception {
         RainHistoryImpl r = new RainHistoryImpl();
         LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0, 0); //base time
         r.incrementRain(time);
@@ -70,7 +82,7 @@ public class RainHistoryImplTest {
         for (LocalDateTime tt : times) {
             r.incrementRain(tt);
         }
-       Assert.assertEquals("hoursBeenRaining with a gap wrong", 10, r.hoursBeenRaining(), 0);
+        Assert.assertEquals("hoursBeenRaining with a gap wrong", 10, r.hoursBeenRaining(), 0);
     }
 
     @Test
@@ -87,7 +99,7 @@ public class RainHistoryImplTest {
         for (LocalDateTime tt : times) {
             r.incrementRain(tt);
         }
-     Assert.assertEquals("getLastTimeRained should match: ", 9, r.getLastTimeSawRain().getHour());
+        Assert.assertEquals("getLastTimeRained should match: ", 9, r.getLastTimeSawRain().getHour());
     }
 
     @Test
@@ -104,13 +116,13 @@ public class RainHistoryImplTest {
         for (LocalDateTime tt : times) {
             r.incrementRain(tt);
         }
-        time = LocalDateTime.of(2000,1,2,0,0,20);  //Add another - gap is a day from previous
+        time = LocalDateTime.of(2000, 1, 2, 0, 0, 20);  //Add another - gap is a day from previous
         for (int i = 0; i < 10; i++) {
             times.add(time.plusSeconds(i));   // Add a reading every second starting at 20
         }
         for (LocalDateTime tt : times) {
             r.incrementRain(tt);
         }
-            Assert.assertEquals("getWhenStartedRaining date is incorrect ", 20, r.getWhenStartedRaining().getSecond(), 0);
+        Assert.assertEquals("getWhenStartedRaining date is incorrect ", 20, r.getWhenStartedRaining().getSecond(), 0);
     }
 }

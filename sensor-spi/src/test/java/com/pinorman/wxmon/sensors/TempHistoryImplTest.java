@@ -3,6 +3,7 @@ package com.pinorman.wxmon.sensors;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,22 @@ public class TempHistoryImplTest {
 
     @Test
     public void testAdd() throws Exception {
-        TempHistoryImpl que = new TempHistoryImpl();
-
+        String fileName = "testTemp.txt";
+        File file = new File(fileName);
+        if (file.isFile()) file.delete();        // in case is was around from before
+        TempHistoryImpl que = new TempHistoryImpl(fileName);
+        Assert.assertEquals("testAdd failed with empty que", que.getCurrentTemp(), -40, 0.0);
+        TempReading t1 = new TempReading(20, LocalDateTime.now());
+        TempReading t2 = new TempReading(40);
+        que.add(t1);
+        que.add(t2);
+        Assert.assertEquals("testAdd failed to return current value", que.getCurrentTemp(), 40, 0.0);
+        /* now instantiate another TempHistory
+         We should see the same current temp from the file created above
+          */
+        TempHistoryImpl newQue = new TempHistoryImpl(fileName);
+        if (file.isFile()) file.delete();        // delete it before the assert
+        Assert.assertEquals("testAdd  failed to return current value from file", newQue.getCurrentTemp(), 40, 0.0);
 
     }
 
@@ -39,7 +54,7 @@ public class TempHistoryImplTest {
 
         Assert.assertEquals("testGetCurrentTemp failed with empty que", que.getCurrentTemp(), -40, 0.0);
         TempReading t1 = new TempReading(20, LocalDateTime.now());
-        TempReading t2 = new TempReading(40 );
+        TempReading t2 = new TempReading(40);
         que.add(t1);
         que.add(t2);
         Assert.assertEquals("testGetCurrentTemp failed to return current value", que.getCurrentTemp(), 40, 0.0);
