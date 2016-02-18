@@ -133,7 +133,7 @@ public class RainHistoryImpl implements RainHistory {
     }
 
     /*
-     * look  through the que - looking for a gap in rain/date of RAIN_GAP
+     * look  through the que - looking for a gap in rain/date of given gap
      * either we find a gap or we reach the beginning of the que.
      *  Set firstTime and lastTime appropreaitely. from the last rain entry (lastTime) back to either a gap or
      *  the beginning (firstTime).
