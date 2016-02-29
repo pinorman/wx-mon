@@ -4,6 +4,7 @@ package com.pinorman.wxmon.client;
 import com.pinorman.wxmon.sensors.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -30,48 +31,75 @@ public class WxClient extends Application {
     private static DateTimeFormatter dateForm = DateTimeFormatter.ofPattern("yyyy-MM-d H:m:ss.nnnnnnnnn");
     private static DateTimeFormatter dateTimeForm = DateTimeFormatter.ofPattern("yyyy-MM-d H:m:ss");
 
-    private static TempHistory tempInside;
-    private static TempHistory tempOutside;
-    private static RainHistory rain;
+    private  TempHistory tempInside;
+    private  TempHistory tempOutside;
+    private  RainHistory rain;
+    private Text outsideLow;
+    private Text outsideHigh;
+    private Text currentReading;
+    static private String serverIP;
+    static private int dayInterval;
 
-
-    private double temp = 10.00;
-    String temperatureLine;
 
     public static void main(String[] args) {
         if (args.length == 0) {
             log.info("Usage: WxClient <Local IP address>");
             System.exit(1);
         }
-        getAndDisplayData(args[0]);
+        serverIP = args[0];
+        dayInterval = 7;
         launch(args);
     }
 
+
     @Override
     public void start(Stage primaryStage) {
-        LocalDateTime timeNow = LocalDateTime.now();
-        TempReading tMax = tempOutside.getMaxTemp(timeNow.minusDays(3), timeNow);
-        TempReading tMin = tempOutside.getMinTemp(timeNow.minusDays(3), timeNow);
 
-        Text text = new Text("Outside Low temperature is: ".concat(decForm.format(tMin.getTemp()))
-                .concat("; Outside High is: ").concat(decForm.format(tMax.getTemp())));
         VBox root = new VBox();
-        root.getChildren().add(text);
-        Text nextLine = new Text("Current Outside temperature is: ".concat(decForm.format(tempOutside.getCurrentTemp()))
-                .concat("; Inside is: ").concat(decForm.format(tempInside.getCurrentTemp())));
-        root.getChildren().add(nextLine);
+        // set up button
+        Button releaseButton = new Button();
+        root.getChildren().add(releaseButton);
+        releaseButton.setText("Refresh");
+        releaseButton.setLayoutX(50);
+        releaseButton.setLayoutY(10);
+        releaseButton.setOnAction(event -> displayTemps());
+        // setup the 3 text boxes for outside low, outside high, and current temperatures
+        outsideLow = new Text("");
+        root.getChildren().add(outsideLow);
+        outsideHigh = new Text("");
+        root.getChildren().add(outsideHigh);
+        currentReading = new Text("");
+        root.getChildren().add(currentReading);
         root.setMinSize(350, 250);
         Scene scene = new Scene(root);
         primaryStage.setX(100);
         primaryStage.setY(200);
         primaryStage.setMinHeight(300);
-        primaryStage.setWidth(400);
+        primaryStage.setWidth(600);
 
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Your first JavaFX Example");
+        primaryStage.setTitle("Temperature Monitoring System");
         primaryStage.show();
     }
 
+    public void displayTemps() {
+        LocalDateTime timeNow = LocalDateTime.now();
+
+        getTempData(serverIP, dayInterval);
+        TempReading tMax = tempOutside.getMaxTemp(timeNow.minusDays(dayInterval), timeNow);
+        TempReading tMin = tempOutside.getMinTemp(timeNow.minusDays(dayInterval), timeNow);
+        outsideLow.setText("Outside Low temperature over the pass week is: "
+                + decForm.format(tMin.getTemp())
+                + " - On " + dateTimeForm.format(tMin.getTempTime()));
+
+        outsideHigh.setText("Outside High temperature over the pass week is: "
+                + (decForm.format(tMax.getTemp()))
+                + " - On " + dateTimeForm.format(tMax.getTempTime()));
+        currentReading.setText("Current Outside temperature is: "
+                + decForm.format(tempOutside.getCurrentTemp())
+                + " -  Inside is: " + decForm.format(tempInside.getCurrentTemp()));
+
+    }
 
     /*
         public class WxClient {
@@ -87,11 +115,11 @@ public class WxClient extends Application {
                 System.exit(1);
             }
             WxClient client = new WxClient();
-            client.getAndDisplayData(args[0]);
+            client.getTempData(args[0]);
         }
 
     */
-    public static void getAndDisplayData(String serverIP) {
+    public void getTempData(String serverIP, int days) {
         ServerCommand cmd = new ServerCommand();
         cmd.setCommand(ServerCommand.CmdType.TEMPERATURE);
         cmd.SetSensorId("inside");                           //inside tempInside probe
@@ -113,8 +141,8 @@ public class WxClient extends Application {
 
         wxSocket.close();
         LocalDateTime timeNow = LocalDateTime.now();
-        TempReading tMax = tempOutside.getMaxTemp(timeNow.minusDays(3), timeNow);
-        TempReading tMin = tempOutside.getMinTemp(timeNow.minusDays(3), timeNow);
+        TempReading tMax = tempOutside.getMaxTemp(timeNow.minusDays(days), timeNow);
+        TempReading tMin = tempOutside.getMinTemp(timeNow.minusDays(days), timeNow);
         log.info("The Low temp - 3 days: {} on {}",
                 decForm.format(tMin.getTemp()), dateTimeForm.format(tMin.getTempTime()));
         log.info("The high temp - 3 days: {} on {}",
