@@ -29,6 +29,8 @@ public class WxRaspiServer {
     private RainHistory rSensor;
     private static String tOutsideFile = "temperatureOutsideDB.txt";
     private static String tInsideFile = "temperatureInsideDB.txt";
+    private static String rainFile = "rainDB.txt";
+
     private TempHistory tOutsideSensor = new TempHistoryImpl(tOutsideFile);
     private TempHistory tInsideSensor = new TempHistoryImpl(tInsideFile);
 
@@ -37,7 +39,7 @@ public class WxRaspiServer {
         tempInsideProbe = new TempSensorHW(TEMP_SENSOR_INSIDE_ID);
         tempOutsideProbe = new TempSensorHW(TEMP_SENSOR_OUTSIDE_ID);
 
-        rSensor = new RainHistoryImpl();
+        rSensor = new RainHistoryImpl(rainFile);
 
         initSensors();
 
@@ -49,8 +51,6 @@ public class WxRaspiServer {
             @Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                 if (event.getState() == PinState.HIGH) rSensor.incrementRain();
-                // display pin state on console
-                //System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
             }
 
         });
