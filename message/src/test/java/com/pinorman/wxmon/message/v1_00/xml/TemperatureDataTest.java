@@ -1,5 +1,9 @@
 package com.pinorman.wxmon.message.v1_00.xml;
 
+import com.pinorman.wxmon.message.TemperatureSensorReading;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -8,10 +12,6 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.pinorman.wxmon.message.TemperatureSensorReading;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TemperatureDataTest {
 
