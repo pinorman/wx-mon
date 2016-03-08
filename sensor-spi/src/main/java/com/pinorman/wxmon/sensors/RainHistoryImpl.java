@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -23,17 +24,18 @@ public class RainHistoryImpl implements RainHistory {
 
     private final double RAIN_STEP = 0.01; // 1/100 of an inch rain sensor
     private final int RAIN_GAP = 2; // is the gap in hours in the que (between dates)
-    private static final Logger log = LoggerFactory.getLogger(TempHistoryImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(RainHistoryImpl.class);
     private static DateTimeFormatter dateParser = DateTimeFormatter.ofPattern(" yyyy-MM-d H:m:ss.nnnnnnnnn");       // notice the " " in front of yyyy
+    private static DecimalFormat decForm = new DecimalFormat("##0.00");
 
     /*
     * tRain catcher
      */
 
-    private Deque<LocalDateTime> qRain;
+    private Deque<RainReading> qRain;
     private LocalDateTime lastTime;     // Used when we traverse the que
     private LocalDateTime firstTime;    // used when we traverse the que
-    private int accumulatedRain = 0;    // dito
+    private double accumulatedRain = 0;    // dito
     private boolean fileWrite;
     private String fileName;
 
@@ -49,6 +51,7 @@ public class RainHistoryImpl implements RainHistory {
 
     public RainHistoryImpl(String dataFile) {
         qRain = new ConcurrentLinkedDeque<>();
+        double rain;
         fileWrite = true;
         fileName = dataFile;
         log.info("Read in any existing Rain data for {} ", dataFile);
@@ -56,7 +59,8 @@ public class RainHistoryImpl implements RainHistory {
         if (file.isFile()) {                            // if the file is there, read from it
             try (Scanner s = new Scanner(file)) {
                 while (s.hasNext()) {
-                    qRain.add(LocalDateTime.parse(s.nextLine(), dateParser)); // read in date and add in the records we parse from the fileName
+                    rain = s.nextDouble();
+                    qRain.add(new RainReading(rain, LocalDateTime.parse(s.nextLine(), dateParser))); // read in date and add in the records we parse from the fileName
                 }
             } catch (IOException e) {
                 log.warn("Error reading Rain fileName ", e);
@@ -72,11 +76,12 @@ public class RainHistoryImpl implements RainHistory {
     }
 
     public void incrementRain(LocalDateTime t) {
-        qRain.add(t);
+        RainReading rain = new RainReading(RAIN_STEP, t);
+        qRain.add(rain);
         if (fileWrite) {
             StringBuilder sb = new StringBuilder();
             // build string with temp and date;
-            sb.append(dateParser.format(t)).append("\n");
+            sb.append(decForm.format(rain.getRain())).append(dateParser.format(t)).append("\n");
             // write it to the file
             try (BufferedWriter tOut = new BufferedWriter(new FileWriter(this.fileName, true))) {
                 tOut.write(sb.toString());
@@ -98,7 +103,8 @@ public class RainHistoryImpl implements RainHistory {
         findGapQue(ChronoUnit.HOURS, RAIN_GAP);
         boolean enoughTime;
         if (firstTime.until(lastTime, timePer) < 1) return (0.0);  // Rain must be going for 1 time unit to make the ca
-        double rain = (double) (accumulatedRain) * RAIN_STEP / (double) firstTime.until(lastTime, ChronoUnit.SECONDS);
+        double rain = (double) accumulatedRain / (double) firstTime.until(lastTime, ChronoUnit.SECONDS);
+        log.info("accumulated rain {}", accumulatedRain);
         if (timePer == ChronoUnit.HOURS)
             return (rain * 3600);  // seconds to hours
         return (rain * 60);        // seconds to minutes
@@ -113,7 +119,7 @@ public class RainHistoryImpl implements RainHistory {
 
     public LocalDateTime getLastTimeSawRain() {
         if (qRain.isEmpty()) return (LocalDateTime.MAX);
-        return (qRain.getLast());
+        return qRain.getLast().getRainTime();
     }
 
     public double getRainTotal() {
@@ -123,7 +129,7 @@ public class RainHistoryImpl implements RainHistory {
     public double getAccumulatedRainLevel(ChronoUnit interval, int gap) {
         if (qRain.isEmpty()) return (0.0);
         findGapQue(interval, gap);
-        return (accumulatedRain * RAIN_STEP);
+        return accumulatedRain;
     }
 
     public long hoursBeenRaining() {
@@ -141,13 +147,15 @@ public class RainHistoryImpl implements RainHistory {
      */
     private void findGapQue(ChronoUnit interval, int gap) {
         accumulatedRain = 0;
+        RainReading rain;
         Iterator rainIterator = qRain.descendingIterator();     // processed last to first in the Deque
-        lastTime = qRain.getLast();                             //
+        lastTime = qRain.getLast().getRainTime();                             //
         LocalDateTime gapBegin = lastTime;
         do {
-            accumulatedRain++;
             firstTime = gapBegin;                              // look between firstTime and gapBegin for gap
-            gapBegin = (LocalDateTime) rainIterator.next();    // move to next time
+            rain = (RainReading) rainIterator.next();           // move to next rain obj
+            gapBegin = rain.getRainTime();
+            accumulatedRain += rain.getRain();
         }
         while (rainIterator.hasNext() && (gapBegin.until(firstTime, interval) < gap));    //have we hit the end or found a gpa?
         if (!rainIterator.hasNext()) firstTime = gapBegin;     // if we reached the end then first should be set here
