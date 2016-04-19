@@ -104,7 +104,6 @@ public class RainHistoryImpl implements RainHistory {
         boolean enoughTime;
         if (firstTime.until(lastTime, timePer) < 1) return (0.0);  // Rain must be going for 1 time unit to make the ca
         double rain = (double) accumulatedRain / (double) firstTime.until(lastTime, ChronoUnit.SECONDS);
-        log.info("accumulated rain {}", accumulatedRain);
         if (timePer == ChronoUnit.HOURS)
             return (rain * 3600);  // seconds to hours
         return (rain * 60);        // seconds to minutes
